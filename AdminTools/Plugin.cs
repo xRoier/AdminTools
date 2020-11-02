@@ -9,9 +9,11 @@ namespace AdminTools
 {
 	public class Plugin : Plugin<Config>
 	{
-		public override string Author { get; } = "Galaxy119";
+		public override string Author { get; } = "Originally by Galaxy119. Modifications by KoukoCocoa & Thomasjosif";
 		public override string Name { get; } = "Admin Tools";
 		public override string Prefix { get; } = "AT";
+		public override Version Version { get; } = new Version(2, 6, 1);
+		public override Version RequiredExiledVersion { get; } = new Version(2, 0, 0);
 		public EventHandlers EventHandlers;
 		public static System.Random NumGen = new System.Random();
 		public static List<Jailed> JailedPlayers = new List<Jailed>();
