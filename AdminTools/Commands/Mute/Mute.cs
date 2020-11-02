@@ -20,6 +20,7 @@ namespace AdminTools.Commands.Mute
         {
             RegisterCommand(new All());
             RegisterCommand(new ICom());
+            RegisterCommand(new RoundStart());
         }
 
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)

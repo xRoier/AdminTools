@@ -20,6 +20,7 @@ namespace AdminTools.Commands.Unmute
         {
             RegisterCommand(new All());
             RegisterCommand(new ICom());
+            RegisterCommand(new RoundStart());
         }
 
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
@@ -31,7 +32,7 @@ namespace AdminTools.Commands.Unmute
                 return false;
             }
 
-            response = "Invalid subcommand. Available ones: icom, all";
+            response = "Invalid subcommand. Available ones: icom, all, roundstart";
             return false;
         }
     }

@@ -28,6 +28,12 @@ namespace AdminTools.Commands.Mute
                 return false;
             }
 
+            if (Round.IsStarted)
+            {
+                response = "You cannot use this command after the round has started!";
+                return false;
+            }
+
             foreach (Player player in Player.List)
             {
                 if(!player.IsMuted && !player.ReferenceHub.serverRoles.RemoteAdmin)
