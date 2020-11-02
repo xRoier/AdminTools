@@ -239,6 +239,7 @@ namespace AdminTools
 					Name = player.Nickname,
 					Role = player.Role,
 					Userid = player.UserId,
+					CurrentRound = true,
 				});
 			if (player.IsOverwatchEnabled)
 				player.IsOverwatchEnabled = false;
@@ -251,11 +252,18 @@ namespace AdminTools
 		public static IEnumerator<float> DoUnJail(Player player)
 		{
 			Jailed jail = Plugin.JailedPlayers.Find(j => j.Userid == player.UserId);
-			player.Role = jail.Role;
-			player.ResetInventory(jail.Items);
-			yield return Timing.WaitForSeconds(1.5f);
-			player.Health = jail.Health;
-			player.Position = jail.Position;
+			if (jail.CurrentRound)
+			{
+				player.Role = jail.Role;
+				player.ResetInventory(jail.Items);
+				yield return Timing.WaitForSeconds(1.5f);
+				player.Health = jail.Health;
+				player.Position = jail.Position;
+			}
+			else
+			{
+				player.Role = RoleType.Spectator;
+			}
 			Plugin.JailedPlayers.Remove(jail);
 		}
 
@@ -322,6 +330,18 @@ namespace AdminTools
 			}
 		}
 
+		public void OnRoundStart()
+		{
+			foreach (Player ply in Plugin.RoundStartMutes)
+			{
+				if (ply != null)
+				{
+					ply.IsMuted = false;
+				}
+			}
+			Plugin.RoundStartMutes.Clear();
+		}
+
 		public void OnRoundEnd(RoundEndedEventArgs ev)
 		{
 			try
@@ -350,10 +370,25 @@ namespace AdminTools
 					Log.Debug($"{s} has their tag hidden.");
 				File.WriteAllLines(plugin.OverwatchFilePath, overwatchRead);
 				File.WriteAllLines(plugin.HiddenTagsFilePath, tagsRead);
+
+				// Update all the jails that it is no longer the current round, so when they are unjailed they don't teleport into the void.
+				foreach (Jailed jail in Plugin.JailedPlayers)
+				{
+					if(jail.CurrentRound)
+						jail.CurrentRound = false;
+				}
 			}
 			catch (Exception e)
 			{
 				Log.Error($"Round End: {e}");
+			}
+
+			if (Plugin.RestartOnEnd)
+			{
+				Log.Info("Restarting server....");
+				Round.Restart();
+
+				Timing.CallDelayed(1.5f, Application.Quit);
 			}
 		}
 

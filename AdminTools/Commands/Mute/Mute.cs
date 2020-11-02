@@ -31,7 +31,7 @@ namespace AdminTools.Commands.Mute
                 return false;
             }
 
-            response = "Invalid subcommand. Available ones: icom, all";
+            response = "Invalid subcommand. Available ones: icom, all, roundstart";
             return false;
         }
     }

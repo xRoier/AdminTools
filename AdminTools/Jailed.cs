@@ -11,5 +11,6 @@ namespace AdminTools
 		public RoleType Role;
 		public Vector3 Position;
 		public float Health;
+		public bool CurrentRound;
 	}
 }

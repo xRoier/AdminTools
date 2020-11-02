@@ -25,6 +25,8 @@ namespace AdminTools
 		public static float HealthInterval = 1;
 		public string OverwatchFilePath;
 		public string HiddenTagsFilePath;
+		public static bool RestartOnEnd = false;
+		public static HashSet<Player> RoundStartMutes = new HashSet<Player>();
 
 		public override void OnEnabled()
 		{
@@ -56,6 +58,7 @@ namespace AdminTools
 				Handlers.Player.ChangingRole += EventHandlers.OnSetClass;
 				Handlers.Server.WaitingForPlayers += EventHandlers.OnWaitingForPlayers;
 				Handlers.Player.InteractingDoor += EventHandlers.OnDoorOpen;
+				Handlers.Server.RoundStarted += EventHandlers.OnRoundStart;
 			}
 			catch (Exception e)
 			{
@@ -72,6 +75,7 @@ namespace AdminTools
 			Handlers.Player.TriggeringTesla -= EventHandlers.OnTriggerTesla;
 			Handlers.Player.ChangingRole -= EventHandlers.OnSetClass;
 			Handlers.Server.WaitingForPlayers -= EventHandlers.OnWaitingForPlayers;
+			Handlers.Server.RoundStarted -= EventHandlers.OnRoundStart;
 			EventHandlers = null;
 			NumGen = null;
 		}
