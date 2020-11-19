@@ -125,7 +125,7 @@ namespace AdminTools
 			if (BenchIndex != 1)
 				BenchIndex = objs.Count();
 			bench.GetComponent<WorkStation>().Networkposition = offset;
-			bench.AddComponent<WorkStationUpgrader>();
+			bench.AddComponent<WorkStation>();
 		}
 
 		public static void SpawnItem(ItemType type, Vector3 pos, Vector3 rot)
