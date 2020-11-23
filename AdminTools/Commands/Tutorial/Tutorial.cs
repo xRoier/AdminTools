@@ -27,7 +27,6 @@ namespace AdminTools.Commands.Tutorial
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
             EventHandlers.LogCommandUsed((CommandSender)sender, EventHandlers.FormatArguments(arguments, 0));
-            MoveType Value = MoveType.Move;
             if (!((CommandSender)sender).CheckPermission("at.tut"))
             {
                 response = "You do not have permission to use this command";
@@ -56,33 +55,10 @@ namespace AdminTools.Commands.Tutorial
                         }
                     }
 
-                    Value = MoveType.Move;
-                    DoTutorialFunction(Ply, Value, out response);
-                    return true;
-                case 2:
-                    if (String.IsNullOrWhiteSpace(arguments.At(0)))
-                    {
-                        response = "Please do not try to put a space as tutorial";
-                        return false;
-                    }
-
-                    Ply = Player.Get(arguments.At(0));
-                    if (Ply == null)
-                    {
-                        response = $"Player not found: {arguments.At(0)}";
-                        return false;
-                    }
-
-                    if (!Enum.TryParse(arguments.At(1), true, out MoveType Type))
-                    {
-                        response = $"Invalid value for move type: {arguments.At(1)}";
-                        return false;
-                    }
-                    Value = Type;
-                    DoTutorialFunction(Ply, Value, out response);
+                    DoTutorialFunction(Ply, out response);
                     return true;
                 default:
-                    response = "Usage: tutorial (optional: id / name) (optional: stay / move)";
+                    response = "Usage: tutorial (optional: id / name)";
                     return false;
             }
         }
@@ -95,14 +71,11 @@ namespace AdminTools.Commands.Tutorial
             Ply.Position = OldPos;
         }
 
-        private void DoTutorialFunction(Player Ply, MoveType Value, out string response)
+        private void DoTutorialFunction(Player Ply, out string response)
         {
             if (Ply.Role != RoleType.Tutorial)
             {
-                if (Value == MoveType.Move)
-                    Timing.RunCoroutine(EventHandlers.DoTut(Ply));
-                else
-                    Timing.RunCoroutine(SetClassAsTutorial(Ply));
+                Timing.RunCoroutine(SetClassAsTutorial(Ply));
                 response = $"Player {Ply.Nickname} is now set to tutorial";
             }
             else

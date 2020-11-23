@@ -30,13 +30,6 @@ namespace AdminTools.Commands.Enums
                 ListBuilder.Append(" ");
             }
             ListBuilder.AppendLine();
-            ListBuilder.Append("MoveType: ");
-            foreach (MoveType Mt in Enum.GetValues(typeof(MoveType)))
-            {
-                ListBuilder.Append(Mt.ToString());
-                ListBuilder.Append(" ");
-            }
-            ListBuilder.AppendLine();
             ListBuilder.Append("GrenadeType: ");
             foreach (GrenadeType Gt in Enum.GetValues(typeof(GrenadeType)))
             {

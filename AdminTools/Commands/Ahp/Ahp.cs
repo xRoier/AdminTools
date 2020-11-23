@@ -15,7 +15,7 @@ namespace AdminTools.Commands.Ahp
 
         public override string[] Aliases { get; } = new string[] { };
 
-        public override string Description { get; } = "Sets a user or users Adrenaline HP to a specified value";
+        public override string Description { get; } = "Sets a user or users Artificial HP to a specified value";
 
         public override void LoadGeneratedCommands() { }
 

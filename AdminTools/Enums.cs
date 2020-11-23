@@ -6,12 +6,6 @@
 		All
 	}
 
-	public enum MoveType
-	{
-		Move,
-		Stay
-	}
-
 	public enum GrenadeType
 	{
 		Frag,

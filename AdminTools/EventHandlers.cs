@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
+using Exiled.Permissions;
 using Grenades;
 using MEC;
 using Mirror;
@@ -206,6 +208,9 @@ namespace AdminTools
 			}
 		}
 
+		// I found the below code to be very overcomplicated for the task at hand. Not sure why it was written like this......
+
+		/*
 		public static IEnumerator<float> DoTut(Player player)
 		{
 			if (player.IsOverwatchEnabled)
@@ -223,11 +228,16 @@ namespace AdminTools
 
 			player.ReferenceHub.serverRoles.CallTargetSetNoclipReady(player.ReferenceHub.characterClassManager.connectionToClient, true);
 			player.ReferenceHub.serverRoles.NoclipReady = true;
-		}
+		}*/
 
 		public static IEnumerator<float> DoJail(Player player, bool skipadd = false)
 		{
 			List<Inventory.SyncItemInfo> items = new List<Inventory.SyncItemInfo>();
+			Dictionary<AmmoType, uint> ammo = new Dictionary<AmmoType, uint>();
+			foreach(AmmoType type in (AmmoType []) Enum.GetValues(typeof(AmmoType)))
+			{
+				ammo[type] = player.Ammo[(int)type];
+			}
 			foreach (Inventory.SyncItemInfo item in player.Inventory.items)
 				items.Add(item);
 			if (!skipadd)
@@ -240,6 +250,7 @@ namespace AdminTools
 					Role = player.Role,
 					Userid = player.UserId,
 					CurrentRound = true,
+					Ammo = ammo
 				});
 			if (player.IsOverwatchEnabled)
 				player.IsOverwatchEnabled = false;
@@ -259,6 +270,10 @@ namespace AdminTools
 				yield return Timing.WaitForSeconds(1.5f);
 				player.Health = jail.Health;
 				player.Position = jail.Position;
+				foreach (AmmoType type in (AmmoType[])Enum.GetValues(typeof(AmmoType)))
+				{
+					player.Ammo[(int)type] = jail.Ammo[type];
+				}
 			}
 			else
 			{
@@ -288,7 +303,7 @@ namespace AdminTools
 			if (Type != GrenadeType.Scp018)
 			{
 				grenade.fuseDuration = Timer;
-				grenade.FullInitData(gm, Player.Position, Quaternion.Euler(grenade.throwStartAngle), grenade.throwLinearVelocityOffset, grenade.throwAngularVelocity);
+				grenade.FullInitData(gm, Player.Position, Quaternion.Euler(grenade.throwStartAngle), grenade.throwLinearVelocityOffset, grenade.throwAngularVelocity, Player.Team);
 			}
 			else
 				grenade.InitData(gm, spawnrand, Vector3.zero);

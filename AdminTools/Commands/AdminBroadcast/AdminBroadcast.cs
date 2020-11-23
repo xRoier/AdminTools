@@ -43,7 +43,7 @@ namespace AdminTools.Commands.AdminBroadcast
             foreach (Player Pl in Player.List)
             {
                 if (Pl.ReferenceHub.serverRoles.RemoteAdmin)
-                    Pl.Broadcast(t, EventHandlers.FormatArguments(arguments, 1) + $" - {((CommandSender)sender).Nickname}", Broadcast.BroadcastFlags.AdminChat);
+                    Pl.Broadcast(t, EventHandlers.FormatArguments(arguments, 1) + $" ~{((CommandSender)sender).Nickname}", Broadcast.BroadcastFlags.AdminChat);
             }
 
             response = $"Message sent to all currently online staff";
