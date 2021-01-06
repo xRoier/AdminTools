@@ -8,6 +8,7 @@ using Exiled.API.Features;
 using Exiled.Events.EventArgs;
 using Exiled.Permissions;
 using Grenades;
+using Interactables.Interobjects;
 using MEC;
 using Mirror;
 using NorthwoodLib.Pools;
@@ -35,11 +36,11 @@ namespace AdminTools
 			if (ev.Name.Contains("REQUEST_DATA PLAYER_LIST"))
 				return;
 		}
-
+		
 		public void OnDoorOpen(InteractingDoorEventArgs ev)
 		{
-			if (Plugin.PryGateHubs.Contains(ev.Player))
-				ev.Door.PryGate();
+			if (Plugin.PryGateHubs.Contains(ev.Player) && ev.Door is PryableDoor pdoor)
+				pdoor.TryPryGate();
 		}
 
 		public static string FormatArguments(ArraySegment<string> sentence, int index)
@@ -126,7 +127,8 @@ namespace AdminTools
 			}
 			if (BenchIndex != 1)
 				BenchIndex = objs.Count();
-			bench.GetComponent<WorkStation>().Networkposition = offset;
+			bench.transform.localPosition = offset.position;
+			bench.transform.localRotation = Quaternion.Euler(offset.rotation);
 			bench.AddComponent<WorkStation>();
 		}
 

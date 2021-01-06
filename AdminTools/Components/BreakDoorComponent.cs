@@ -1,5 +1,6 @@
 ﻿using Exiled.API.Features;
 using Exiled.Events.EventArgs;
+using Interactables.Interobjects.DoorUtils;
 using UnityEngine;
 using Handlers = Exiled.Events.Handlers;
 
@@ -30,17 +31,13 @@ namespace AdminTools
             if (ev.Player != player)
                 return;
 
-            if (!unbreakableDoorNames.Contains(ev.Door.DoorName))
-                BreakDoor(ev.Door);
-            else if (breakAll)
-                BreakDoor(ev.Door);
+            if (ev.Door is IDamageableDoor damageabledoor)
+                BreakDoor(damageabledoor);
         }
 
-        private void BreakDoor(Door door)
+        private void BreakDoor(IDamageableDoor door)
         {
-            door.Networkdestroyed = true;
-            door.DestroyDoor(true);
-            door.destroyed = true;
+            door.ServerDamage(ushort.MaxValue, DoorDamageType.ServerCommand);
         }
 
         public void OnDestroy()

@@ -23,6 +23,9 @@ namespace AdminTools.Commands.SpawnWorkbench
 
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
+            response = "Command broken after release. Will be fixed soonTM!";
+            return false;
+
             EventHandlers.LogCommandUsed((CommandSender)sender, EventHandlers.FormatArguments(arguments, 0));
             if (!((CommandSender)sender).CheckPermission("at.benches"))
             {

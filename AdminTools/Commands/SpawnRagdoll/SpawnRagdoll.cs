@@ -14,7 +14,7 @@ namespace AdminTools.Commands.SpawnRagdoll
 
         public override string Command { get; } = "spawnragdoll";
 
-        public override string[] Aliases { get; } = new string[] { "sr", "ragdoll", "rd", "rag", "doll" };
+        public override string[] Aliases { get; } = new string[] { "ragdoll", "rd", "rag", "doll" };
 
         public override string Description { get; } = "Spawns a specified number of ragdolls on a user";
 
