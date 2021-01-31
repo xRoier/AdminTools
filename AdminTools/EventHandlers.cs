@@ -101,7 +101,16 @@ namespace AdminTools
 			}
 		}
 
-		public static void SpawnWorkbench(Player Ply, Vector3 position, Vector3 rotation, Vector3 size, out int BenchIndex)
+        public void OnPlayerDestroyed(DestroyingEventArgs ev)
+        {
+			if (Plugin.RoundStartMutes.Contains(ev.Player))
+            {
+				ev.Player.IsMuted = false;
+				Plugin.RoundStartMutes.Remove(ev.Player);
+            }
+        }
+
+        public static void SpawnWorkbench(Player Ply, Vector3 position, Vector3 rotation, Vector3 size, out int BenchIndex)
 		{
 			BenchIndex = 0;
 			GameObject bench =
@@ -322,7 +331,7 @@ namespace AdminTools
 			NetworkServer.Spawn(component.gameObject);
 		}
 
-		public void OnPlayerJoin(JoinedEventArgs ev)
+		public void OnPlayerVerified(VerifiedEventArgs ev)
 		{
 			try
 			{
@@ -340,6 +349,13 @@ namespace AdminTools
 					Log.Debug($"Hiding {ev.Player.UserId}'s tag.");
 					ev.Player.BadgeHidden = true;
 				}
+
+				if (Plugin.RoundStartMutes.Count != 0 && !ev.Player.ReferenceHub.serverRoles.RemoteAdmin && !Plugin.RoundStartMutes.Contains(ev.Player))
+                {
+					Log.Debug($"Muting {ev.Player.UserId} (no RA).");
+					ev.Player.IsMuted = true;
+					Plugin.RoundStartMutes.Add(ev.Player);
+                }
 			}
 			catch (Exception e)
 			{
@@ -403,9 +419,7 @@ namespace AdminTools
 			if (Plugin.RestartOnEnd)
 			{
 				Log.Info("Restarting server....");
-				Round.Restart();
-
-				Timing.CallDelayed(1.5f, Application.Quit);
+				Round.Restart(false, true, ServerStatic.NextRoundAction.Restart);
 			}
 		}
 
