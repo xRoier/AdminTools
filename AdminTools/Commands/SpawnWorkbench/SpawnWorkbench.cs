@@ -1,6 +1,7 @@
 ﻿using CommandSystem;
 using Exiled.API.Features;
 using Exiled.Permissions.Extensions;
+using RemoteAdmin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,14 @@ namespace AdminTools.Commands.SpawnWorkbench
                 return false;
             }
 
-            Player Sender = Player.Get(((CommandSender)sender).ReferenceHub);
+            if (!(sender is PlayerCommandSender plysend))
+            {
+                response = "You must be in-game to run this command!";
+                return false;
+            }
+
+            Player Sender = Player.Get(plysend.ReferenceHub);
+
             if (arguments.Count < 1)
             {
                 response = "Usage: bench ((player id / name) or (all / *)) (x value) (y value) (z value)" +

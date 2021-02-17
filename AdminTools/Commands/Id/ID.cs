@@ -1,6 +1,7 @@
 ﻿using CommandSystem;
 using Exiled.API.Features;
 using NorthwoodLib.Pools;
+using RemoteAdmin;
 using System;
 using System.Linq;
 using System.Text;
@@ -62,7 +63,15 @@ namespace AdminTools.Commands.Id
                 default:
                     Player Pl;
                     if (String.IsNullOrWhiteSpace(arguments.At(0)))
-                        Pl = Player.Get(((CommandSender)sender).ReferenceHub);
+                    {
+                        if (!(sender is PlayerCommandSender plysend))
+                        {
+                            response = "You must be in-game to run this command if you specify yourself!";
+                            return false;
+                        }
+
+                        Pl = Player.Get(plysend.ReferenceHub);
+                    }
                     else
                     {
                         Pl = Player.Get(arguments.At(0));

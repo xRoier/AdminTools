@@ -5,6 +5,7 @@ using MEC;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using RemoteAdmin;
 
 namespace AdminTools.Commands.Tutorial
 {
@@ -38,7 +39,15 @@ namespace AdminTools.Commands.Tutorial
                 case 0:
                 case 1:
                     if (arguments.Count == 0)
-                        Ply = Player.Get(((CommandSender)sender).ReferenceHub);
+                    {
+                        if (!(sender is PlayerCommandSender plysend))
+                        {
+                            response = "You must be in-game to run this command if you specify yourself!";
+                            return false;
+                        }
+
+                        Ply = Player.Get(plysend.ReferenceHub);
+                    }
                     else
                     {
                         if (String.IsNullOrWhiteSpace(arguments.At(0)))
