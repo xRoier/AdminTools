@@ -12,8 +12,8 @@ namespace AdminTools
 		public override string Author { get; } = "Originally by Galaxy119. Modifications by KoukoCocoa & Thomasjosif";
 		public override string Name { get; } = "Admin Tools";
 		public override string Prefix { get; } = "AT";
-		public override Version Version { get; } = new Version(2, 6, 6);
-		public override Version RequiredExiledVersion { get; } = new Version(2, 1, 29, 0);
+		public override Version Version { get; } = new Version(2, 6, 7);
+		public override Version RequiredExiledVersion { get; } = new Version(2, 8, 0);
 
 		public EventHandlers EventHandlers;
 		public static System.Random NumGen = new System.Random();
