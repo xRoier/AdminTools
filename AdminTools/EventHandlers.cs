@@ -341,13 +341,13 @@ namespace AdminTools
 				if (File.ReadAllText(plugin.OverwatchFilePath).Contains(ev.Player.UserId))
 				{
 					Log.Debug($"Putting {ev.Player.UserId} into overwatch.");
-					ev.Player.IsOverwatchEnabled = true;
+					Timing.CallDelayed(1, () => ev.Player.IsOverwatchEnabled = true);
 				}
 
 				if (File.ReadAllText(plugin.HiddenTagsFilePath).Contains(ev.Player.UserId))
 				{
 					Log.Debug($"Hiding {ev.Player.UserId}'s tag.");
-					ev.Player.BadgeHidden = true;
+					Timing.CallDelayed(1, () => ev.Player.BadgeHidden = true);
 				}
 
 				if (Plugin.RoundStartMutes.Count != 0 && !ev.Player.ReferenceHub.serverRoles.RemoteAdmin && !Plugin.RoundStartMutes.Contains(ev.Player))
@@ -391,9 +391,9 @@ namespace AdminTools
 					else if (!player.IsOverwatchEnabled && overwatchRead.Contains(userId))
 						overwatchRead.Remove(userId);
 
-					if (player.ReferenceHub.serverRoles._hideLocalBadge && !tagsRead.Contains(userId))
+					if (player.BadgeHidden && !tagsRead.Contains(userId))
 						tagsRead.Add(userId);
-					else if (!player.ReferenceHub.serverRoles._hideLocalBadge && tagsRead.Contains(userId))
+					else if (!player.BadgeHidden && tagsRead.Contains(userId))
 						tagsRead.Remove(userId);
 				}
 
