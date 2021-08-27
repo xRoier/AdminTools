@@ -15,7 +15,6 @@ namespace AdminTools.Commands.Mute
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            EventHandlers.LogCommandUsed((CommandSender)sender, EventHandlers.FormatArguments(arguments, 0));
             if (!((CommandSender)sender).CheckPermission("at.mute"))
             {
                 response = "You do not have permission to use this command";

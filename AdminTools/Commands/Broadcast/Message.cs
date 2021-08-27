@@ -15,9 +15,9 @@ namespace AdminTools.Commands.Message
     {
         public Message() => LoadGeneratedCommands();
 
-        public override string Command { get; } = "broadcast";
+        public override string Command { get; } = "atbroadcast";
 
-        public override string[] Aliases { get; } = new string[] { "bc" };
+        public override string[] Aliases { get; } = new string[] { "atbc" };
 
         public override string Description { get; } = "Broadcasts a message to either a user, a group, a role, all staff, or everyone";
 
@@ -25,7 +25,6 @@ namespace AdminTools.Commands.Message
 
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            EventHandlers.LogCommandUsed((CommandSender)sender, EventHandlers.FormatArguments(arguments, 0));
             if (!CommandProcessor.CheckPermissions(((CommandSender)sender), "broadcast", PlayerPermissions.Broadcasting, "AdminTools", false))
             {
                 response = "You do not have permission to use this command";

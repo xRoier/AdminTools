@@ -14,7 +14,6 @@ namespace AdminTools.Commands.Configuration
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            EventHandlers.LogCommandUsed((CommandSender)sender, EventHandlers.FormatArguments(arguments, 0));
             if (arguments.Count != 0)
             {
                 response = "Usage: cfig reload";

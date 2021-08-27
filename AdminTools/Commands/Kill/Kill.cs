@@ -11,7 +11,7 @@ namespace AdminTools.Commands.Kill
     {
         public Kill() => LoadGeneratedCommands();
 
-        public override string Command { get; } = "kill";
+        public override string Command { get; } = "atkill";
 
         public override string[] Aliases { get; } = new string[] { };
 
@@ -21,7 +21,6 @@ namespace AdminTools.Commands.Kill
 
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            EventHandlers.LogCommandUsed((CommandSender)sender, EventHandlers.FormatArguments(arguments, 0));
             if (!((CommandSender)sender).CheckPermission("at.kill"))
             {
                 response = "You do not have permission to use this command";

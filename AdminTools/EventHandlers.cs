@@ -29,13 +29,6 @@ namespace AdminTools
 		private readonly Plugin _plugin;
 		public EventHandlers(Plugin plugin) => this._plugin = plugin;
 
-		public static void LogCommandUsed(CommandSender sender, string command)
-		{
-			string data =
-				$"{DateTime.Now}: {sender.Nickname} ({sender.SenderId}) executed: {command} {Environment.NewLine}";
-			File.AppendAllText(Paths.Log, data);
-		}
-
 		public void OnDoorOpen(InteractingDoorEventArgs ev)
 		{
 			if (Plugin.PryGateHubs.Contains(ev.Player))

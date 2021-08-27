@@ -14,7 +14,7 @@ namespace AdminTools.Commands.Id
     {
         public ID() => LoadGeneratedCommands();
 
-        public override string Command { get; } = "id";
+        public override string Command { get; } = "atid";
 
         public override string[] Aliases { get; } = new string[] { };
 
@@ -24,7 +24,6 @@ namespace AdminTools.Commands.Id
 
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            EventHandlers.LogCommandUsed((CommandSender)sender, EventHandlers.FormatArguments(arguments, 0));
             if (arguments.Count != 1)
             {
                 response = "Usage: id ((player id / name) or (all / *))";

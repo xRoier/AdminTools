@@ -22,7 +22,6 @@ namespace AdminTools.Commands.Configuration
 
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            EventHandlers.LogCommandUsed((CommandSender)sender, EventHandlers.FormatArguments(arguments, 0));
             response = "Invalid subcommmand. Available ones: reload";
             return false;
         }

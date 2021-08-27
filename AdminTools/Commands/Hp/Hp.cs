@@ -11,7 +11,7 @@ namespace AdminTools.Commands.Hp
     {
         public Hp() => LoadGeneratedCommands();
 
-        public override string Command { get; } = "hp";
+        public override string Command { get; } = "athp";
 
         public override string[] Aliases { get; } = new string[] { };
 
@@ -21,7 +21,6 @@ namespace AdminTools.Commands.Hp
 
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            EventHandlers.LogCommandUsed((CommandSender)sender, EventHandlers.FormatArguments(arguments, 0));
             if (!CommandProcessor.CheckPermissions(((CommandSender)sender), "hp", PlayerPermissions.PlayersManagement, "AdminTools", false))
             {
                 response = "You do not have permission to use this command";

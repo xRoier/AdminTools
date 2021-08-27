@@ -114,12 +114,10 @@
     <Compile Include="Commands\HintBroadcast\HintBroadcast.cs" />
     <Compile Include="Commands\Hp\Hp.cs" />
     <Compile Include="Commands\Jail\Jail.cs" />
-    <Compile Include="Commands\PlayerBroadcast\PlayerBroadcast.cs" />
     <Compile Include="Commands\Position\Position.cs" />
     <Compile Include="Commands\PryGates\PryGates.cs" />
     <Compile Include="Commands\RandomTeleport\RandomTeleport.cs" />
     <Compile Include="Commands\Regeneration\Regeneration.cs" />
-    <Compile Include="Commands\RestartOnEnd\RestartOnEnd.cs" />
     <Compile Include="Commands\SpawnRagdoll\SpawnRagdoll.cs" />
     <Compile Include="Commands\Scale\Scale.cs" />
     <Compile Include="Commands\Broadcast\Message.cs" />

@@ -21,7 +21,6 @@ namespace AdminTools.Commands.Enums
 
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            EventHandlers.LogCommandUsed((CommandSender)sender, EventHandlers.FormatArguments(arguments, 0));
             StringBuilder listBuilder = StringBuilderPool.Shared.Rent();
             listBuilder.Append("Here are the following enums you can use in commands:\n\nBreakType: ");
             foreach (BreakType bt in Enum.GetValues(typeof(BreakType)))
