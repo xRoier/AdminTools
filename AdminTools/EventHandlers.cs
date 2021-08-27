@@ -233,13 +233,12 @@ namespace AdminTools
 		{
 			List<Item> items = new List<Item>();
 			Dictionary<AmmoType, ushort> ammo = new Dictionary<AmmoType, ushort>();
-			foreach(AmmoType type in (AmmoType []) Enum.GetValues(typeof(AmmoType)))
-			{
-				ammo[type] = player.Ammo[ItemExtensions.GetItemType(type)];
-			}
+			foreach (KeyValuePair<ItemType, ushort> kvp in player.Ammo)
+				ammo.Add(kvp.Key.GetAmmoType(), kvp.Value);
 			foreach (Item item in player.Items)
 				items.Add(item);
 			if (!skipadd)
+			{
 				Plugin.JailedPlayers.Add(new Jailed
 				{
 					Health = player.Health,
@@ -251,12 +250,14 @@ namespace AdminTools
 					CurrentRound = true,
 					Ammo = ammo
 				});
+			}
+
 			if (player.IsOverwatchEnabled)
 				player.IsOverwatchEnabled = false;
 			yield return Timing.WaitForSeconds(1f);
+			player.ClearInventory(false);
 			player.Role = RoleType.Tutorial;
 			player.Position = new Vector3(53f, 1020f, -44f);
-			player.ClearInventory();
 		}
 
 		public static IEnumerator<float> DoUnJail(Player player)
@@ -264,15 +265,13 @@ namespace AdminTools
 			Jailed jail = Plugin.JailedPlayers.Find(j => j.Userid == player.UserId);
 			if (jail.CurrentRound)
 			{
-				player.Role = jail.Role;
+				player.SetRole(jail.Role, SpawnReason.ForceClass, true);
+				yield return Timing.WaitForSeconds(0.5f);
 				player.ResetInventory(jail.Items);
-				yield return Timing.WaitForSeconds(1.5f);
 				player.Health = jail.Health;
 				player.Position = jail.Position;
-				foreach (AmmoType type in (AmmoType[])Enum.GetValues(typeof(AmmoType)))
-				{
-					player.Ammo[type.GetItemType()] = jail.Ammo[type];
-				}
+				foreach (KeyValuePair<AmmoType, ushort> kvp in jail.Ammo)
+					player.Ammo[kvp.Key.GetItemType()] = kvp.Value;
 			}
 			else
 			{

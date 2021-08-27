@@ -44,8 +44,17 @@ namespace AdminTools.Commands.Jail
 
             if (Plugin.JailedPlayers.Any(j => j.Userid == ply.UserId))
             {
-                Timing.RunCoroutine(EventHandlers.DoUnJail(ply));
-                response = $"Player {ply.Nickname} has been unjailed now";
+                try
+                {
+                    Timing.RunCoroutine(EventHandlers.DoUnJail(ply));
+                    response = $"Player {ply.Nickname} has been unjailed now";
+                }
+                catch (Exception e)
+                {
+                    Log.Error($"{e}");
+                    response = "Command failed. Check server log.";
+                    return false;
+                }
             }
             else
             {
