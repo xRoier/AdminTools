@@ -56,8 +56,8 @@ namespace AdminTools.Commands.Message
                         return false;
                     }
 
-                    Player Ply = Player.Get(arguments.At(1));
-                    if (Ply == null)
+                    Player ply = Player.Get(arguments.At(1));
+                    if (ply == null)
                     {
                         response = $"Player not found: {arguments.At(1)}";
                         return false;
@@ -69,8 +69,8 @@ namespace AdminTools.Commands.Message
                         return false;
                     }
 
-                    Ply.Broadcast(time, EventHandlers.FormatArguments(arguments, 3));
-                    response = $"Message sent to {Ply.Nickname}";
+                    ply.Broadcast(time, EventHandlers.FormatArguments(arguments, 3));
+                    response = $"Message sent to {ply.Nickname}";
                     return true;
                 case "users":
                     if (arguments.Count < 4)
@@ -79,14 +79,14 @@ namespace AdminTools.Commands.Message
                         return false;
                     }
 
-                    string[] Users = arguments.At(1).Split(',');
-                    List<Player> PlyList = new List<Player>();
-                    foreach (string s in Users)
+                    string[] users = arguments.At(1).Split(',');
+                    List<Player> plyList = new List<Player>();
+                    foreach (string s in users)
                     {
                         if (int.TryParse(s, out int id) && Player.Get(id) != null)
-                            PlyList.Add(Player.Get(id));
+                            plyList.Add(Player.Get(id));
                         else if (Player.Get(s) != null)
-                            PlyList.Add(Player.Get(s));
+                            plyList.Add(Player.Get(s));
                     }
 
                     if (!ushort.TryParse(arguments.At(2), out ushort tme) && tme <= 0)
@@ -95,20 +95,20 @@ namespace AdminTools.Commands.Message
                         return false;
                     }
 
-                    foreach (Player P in PlyList)
-                        P.Broadcast(tme, EventHandlers.FormatArguments(arguments, 3));
+                    foreach (Player p in plyList)
+                        p.Broadcast(tme, EventHandlers.FormatArguments(arguments, 3));
 
 
-                    StringBuilder Builder = StringBuilderPool.Shared.Rent("Message sent to players: ");
-                    foreach (Player P in PlyList)
+                    StringBuilder builder = StringBuilderPool.Shared.Rent("Message sent to players: ");
+                    foreach (Player p in plyList)
                     {
-                        Builder.Append("\"");
-                        Builder.Append(P.Nickname);
-                        Builder.Append("\"");
-                        Builder.Append(" ");
+                        builder.Append("\"");
+                        builder.Append(p.Nickname);
+                        builder.Append("\"");
+                        builder.Append(" ");
                     }
-                    string message = Builder.ToString();
-                    StringBuilderPool.Shared.Return(Builder);
+                    string message = builder.ToString();
+                    StringBuilderPool.Shared.Return(builder);
                     response = message;
                     return true;
                 case "group":
@@ -118,8 +118,8 @@ namespace AdminTools.Commands.Message
                         return false;
                     }
 
-                    UserGroup BroadcastGroup = ServerStatic.PermissionsHandler.GetGroup(arguments.At(1));
-                    if (BroadcastGroup == null)
+                    UserGroup broadcastGroup = ServerStatic.PermissionsHandler.GetGroup(arguments.At(1));
+                    if (broadcastGroup == null)
                     {
                         response = $"Invalid group: {arguments.At(1)}";
                         return false;
@@ -133,7 +133,7 @@ namespace AdminTools.Commands.Message
 
                     foreach (Player player in Player.List)
                     {
-                        if (player.Group.BadgeText.Equals(BroadcastGroup.BadgeText))
+                        if (player.Group.BadgeText.Equals(broadcastGroup.BadgeText))
                             player.Broadcast(tim, EventHandlers.FormatArguments(arguments, 3));
                     }
 
@@ -146,13 +146,13 @@ namespace AdminTools.Commands.Message
                         return false;
                     }
 
-                    string[] Groups = arguments.At(1).Split(',');
-                    List<string> GroupList = new List<string>();
-                    foreach (string s in Groups)
+                    string[] groups = arguments.At(1).Split(',');
+                    List<string> groupList = new List<string>();
+                    foreach (string s in groups)
                     {
-                        UserGroup BroadGroup = ServerStatic.PermissionsHandler.GetGroup(s);
-                        if (BroadGroup != null)
-                            GroupList.Add(BroadGroup.BadgeText);
+                        UserGroup broadGroup = ServerStatic.PermissionsHandler.GetGroup(s);
+                        if (broadGroup != null)
+                            groupList.Add(broadGroup.BadgeText);
 
                     }
 
@@ -162,21 +162,21 @@ namespace AdminTools.Commands.Message
                         return false;
                     }
 
-                    foreach (Player P in Player.List)
-                        if (GroupList.Contains(P.Group.BadgeText))
-                            P.Broadcast(e, EventHandlers.FormatArguments(arguments, 3));
+                    foreach (Player p in Player.List)
+                        if (groupList.Contains(p.Group.BadgeText))
+                            p.Broadcast(e, EventHandlers.FormatArguments(arguments, 3));
 
 
-                    StringBuilder Bdr = StringBuilderPool.Shared.Rent("Message sent to groups with badge text: ");
-                    foreach (string P in GroupList)
+                    StringBuilder bdr = StringBuilderPool.Shared.Rent("Message sent to groups with badge text: ");
+                    foreach (string p in groupList)
                     {
-                        Bdr.Append("\"");
-                        Bdr.Append(P);
-                        Bdr.Append("\"");
-                        Bdr.Append(" ");
+                        bdr.Append("\"");
+                        bdr.Append(p);
+                        bdr.Append("\"");
+                        bdr.Append(" ");
                     }
-                    string ms = Bdr.ToString();
-                    StringBuilderPool.Shared.Return(Bdr);
+                    string ms = bdr.ToString();
+                    StringBuilderPool.Shared.Return(bdr);
                     response = ms;
                     return true;
                 case "role":
@@ -186,7 +186,7 @@ namespace AdminTools.Commands.Message
                         return false;
                     }
 
-                    if (!Enum.TryParse(arguments.At(1), true, out RoleType Role))
+                    if (!Enum.TryParse(arguments.At(1), true, out RoleType role))
                     {
                         response = $"Invalid value for RoleType: {arguments.At(1)}";
                         return false;
@@ -198,10 +198,10 @@ namespace AdminTools.Commands.Message
                         return false;
                     }
 
-                    foreach (Player Player in Player.List)
+                    foreach (Player player in Player.List)
                     {
-                        if (Player.Role == Role)
-                            Player.Broadcast(te, EventHandlers.FormatArguments(arguments, 3));
+                        if (player.Role == role)
+                            player.Broadcast(te, EventHandlers.FormatArguments(arguments, 3));
                     }
 
                     response = $"Message sent to all members of \"{arguments.At(1)}\"";
@@ -213,12 +213,12 @@ namespace AdminTools.Commands.Message
                         return false;
                     }
 
-                    string[] Roles = arguments.At(1).Split(',');
-                    List<RoleType> RoleList = new List<RoleType>();
-                    foreach (string s in Roles)
+                    string[] roles = arguments.At(1).Split(',');
+                    List<RoleType> roleList = new List<RoleType>();
+                    foreach (string s in roles)
                     {
-                        if (Enum.TryParse(s, true, out RoleType R))
-                            RoleList.Add(R);
+                        if (Enum.TryParse(s, true, out RoleType r))
+                            roleList.Add(r);
                     }
 
                     if (!ushort.TryParse(arguments.At(2), out ushort ti) && ti <= 0)
@@ -227,20 +227,20 @@ namespace AdminTools.Commands.Message
                         return false;
                     }
 
-                    foreach (Player P in Player.List)
-                        if (RoleList.Contains(P.Role))
-                            P.Broadcast(ti, EventHandlers.FormatArguments(arguments, 3));
+                    foreach (Player p in Player.List)
+                        if (roleList.Contains(p.Role) && p.ReferenceHub.queryProcessor._ipAddress != "127.0.0.1")
+                            p.Broadcast(ti, EventHandlers.FormatArguments(arguments, 3));
 
-                    StringBuilder Build = StringBuilderPool.Shared.Rent("Message sent to roles: ");
-                    foreach (RoleType Ro in RoleList)
+                    StringBuilder build = StringBuilderPool.Shared.Rent("Message sent to roles: ");
+                    foreach (RoleType ro in roleList)
                     {
-                        Build.Append("\"");
-                        Build.Append(Ro.ToString());
-                        Build.Append("\"");
-                        Build.Append(" ");
+                        build.Append("\"");
+                        build.Append(ro.ToString());
+                        build.Append("\"");
+                        build.Append(" ");
                     }
-                    string msg = Build.ToString();
-                    StringBuilderPool.Shared.Return(Build);
+                    string msg = build.ToString();
+                    StringBuilderPool.Shared.Return(build);
                     response = msg;
                     return true;
                 case "random":
@@ -257,9 +257,10 @@ namespace AdminTools.Commands.Message
                         return false;
                     }
 
-                    Player Plyr = Player.List.ToList()[Plugin.NumGen.Next(0, Player.List.Count())];
-                    Plyr.Broadcast(me, EventHandlers.FormatArguments(arguments, 2));
-                    response = $"Message sent to {Plyr.Nickname}";
+                    Player plyr = Player.List.ToList()[Plugin.NumGen.Next(0, Player.List.Count())];
+                    if (plyr.ReferenceHub.queryProcessor._ipAddress != "127.0.0.1")
+                        plyr.Broadcast(me, EventHandlers.FormatArguments(arguments, 2));
+                    response = $"Message sent to {plyr.Nickname}";
                     return true;
                 case "staff":
                 case "admin":
@@ -275,10 +276,10 @@ namespace AdminTools.Commands.Message
                         return false;
                     }
 
-                    foreach (Player Pl in Player.List)
+                    foreach (Player pl in Player.List)
                     {
-                        if (Pl.ReferenceHub.serverRoles.RemoteAdmin)
-                            Pl.Broadcast(t, EventHandlers.FormatArguments(arguments, 2) + $" - {((CommandSender)sender).Nickname}", Broadcast.BroadcastFlags.AdminChat);
+                        if (pl.ReferenceHub.serverRoles.RemoteAdmin)
+                            pl.Broadcast(t, EventHandlers.FormatArguments(arguments, 2) + $" - {((CommandSender)sender).Nickname}", Broadcast.BroadcastFlags.AdminChat);
                     }
 
                     response = $"Message sent to all currently online staff";

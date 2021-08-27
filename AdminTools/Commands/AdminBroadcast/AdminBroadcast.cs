@@ -40,10 +40,10 @@ namespace AdminTools.Commands.AdminBroadcast
                 return false;
             }
 
-            foreach (Player Pl in Player.List)
+            foreach (Player pl in Player.List)
             {
-                if (Pl.ReferenceHub.serverRoles.RemoteAdmin)
-                    Pl.Broadcast(t, EventHandlers.FormatArguments(arguments, 1) + $" ~{((CommandSender)sender).Nickname}", Broadcast.BroadcastFlags.AdminChat);
+                if (pl.ReferenceHub.serverRoles.RemoteAdmin)
+                    pl.Broadcast(t, EventHandlers.FormatArguments(arguments, 1) + $" ~{((CommandSender)sender).Nickname}", Broadcast.BroadcastFlags.AdminChat);
             }
 
             response = $"Message sent to all currently online staff";

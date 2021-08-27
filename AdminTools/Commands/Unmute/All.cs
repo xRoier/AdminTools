@@ -28,11 +28,11 @@ namespace AdminTools.Commands.Unmute
                 return false;
             }
 
-            foreach (Player Ply in Player.List)
-                if (!Ply.ReferenceHub.serverRoles.RemoteAdmin)
+            foreach (Player ply in Player.List)
+                if (!ply.ReferenceHub.serverRoles.RemoteAdmin)
                 {
-                    Ply.IsIntercomMuted = false;
-                    Ply.IsMuted = false;
+                    ply.IsIntercomMuted = false;
+                    ply.IsMuted = false;
                 }
 
             response = "Everyone from the server who is not a staff can now speak freely";

@@ -36,22 +36,22 @@ namespace AdminTools.Commands.Jail
                 return false;
             }
 
-            Player Ply = Player.Get(arguments.At(0));
-            if (Ply == null)
+            Player ply = Player.Get(arguments.At(0));
+            if (ply == null)
             {
                 response = $"Player not found: {arguments.At(0)}";
                 return false;
             }
 
-            if (Plugin.JailedPlayers.Any(j => j.Userid == Ply.UserId))
+            if (Plugin.JailedPlayers.Any(j => j.Userid == ply.UserId))
             {
-                Timing.RunCoroutine(EventHandlers.DoUnJail(Ply));
-                response = $"Player {Ply.Nickname} has been unjailed now";
+                Timing.RunCoroutine(EventHandlers.DoUnJail(ply));
+                response = $"Player {ply.Nickname} has been unjailed now";
             }
             else
             {
-                Timing.RunCoroutine(EventHandlers.DoJail(Ply));
-                response = $"Player {Ply.Nickname} has been jailed now";
+                Timing.RunCoroutine(EventHandlers.DoJail(ply));
+                response = $"Player {ply.Nickname} has been jailed now";
             }
             return true;
         }

@@ -67,10 +67,6 @@ namespace AdminTools
 				}
 			}
 			ccm.GetComponent<CapsuleCollider>().enabled = (role.team != Team.RIP);
-			if (ccm.MyModel != null)
-			{
-				ccm.GetComponent<WeaponManager>().hitboxes = ccm.MyModel.GetComponentsInChildren<HitboxIdentity>(true);
-			}
 		}
 	}
 }

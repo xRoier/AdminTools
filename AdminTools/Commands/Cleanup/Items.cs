@@ -4,6 +4,9 @@ using System;
 
 namespace AdminTools.Commands.Cleanup
 {
+    using Exiled.API.Features;
+    using Exiled.API.Features.Items;
+
     class Items : ICommand
     {
         public string Command { get; } = "items";
@@ -27,8 +30,8 @@ namespace AdminTools.Commands.Cleanup
                 return false;
             }
 
-            foreach (Pickup item in UnityEngine.Object.FindObjectsOfType<Pickup>())
-                item.Delete();
+            foreach (Pickup item in Map.Pickups)
+                item.Destroy();
 
             response = "Items have been cleaned up now";
             return true;

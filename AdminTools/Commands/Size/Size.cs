@@ -38,12 +38,12 @@ namespace AdminTools.Commands.Size
             switch (arguments.At(0))
             {
                 case "reset":
-                    foreach (Player Ply in Player.List)
+                    foreach (Player ply in Player.List)
                     {
-                        if (Ply.Role == RoleType.Spectator || Ply.Role == RoleType.None)
+                        if (ply.Role == RoleType.Spectator || ply.Role == RoleType.None)
                             continue;
 
-                        EventHandlers.SetPlayerScale(Ply.GameObject, 1, 1, 1);
+                        EventHandlers.SetPlayerScale(ply.GameObject, 1, 1, 1);
                     }
 
                     response = $"Everyone's size has been reset";
@@ -74,12 +74,12 @@ namespace AdminTools.Commands.Size
                         return false;
                     }
 
-                    foreach (Player Ply in Player.List)
+                    foreach (Player ply in Player.List)
                     {
-                        if (Ply.Role == RoleType.Spectator || Ply.Role == RoleType.None)
+                        if (ply.Role == RoleType.Spectator || ply.Role == RoleType.None)
                             continue;
 
-                        EventHandlers.SetPlayerScale(Ply.GameObject, xval, yval, zval);
+                        EventHandlers.SetPlayerScale(ply.GameObject, xval, yval, zval);
                     }
 
                     response = $"Everyone's scale has been set to {xval} {yval} {zval}";
@@ -91,8 +91,8 @@ namespace AdminTools.Commands.Size
                         return false;
                     }
 
-                    Player Pl = Player.Get(arguments.At(0));
-                    if (Pl == null)
+                    Player pl = Player.Get(arguments.At(0));
+                    if (pl == null)
                     {
                         response = $"Player not found: {arguments.At(0)}";
                         return false;
@@ -116,8 +116,8 @@ namespace AdminTools.Commands.Size
                         return false;
                     }
 
-                    EventHandlers.SetPlayerScale(Pl.GameObject, x, y, z);
-                    response = $"Player {Pl.Nickname}'s scale has been set to {x} {y} {z}";
+                    EventHandlers.SetPlayerScale(pl.GameObject, x, y, z);
+                    response = $"Player {pl.Nickname}'s scale has been set to {x} {y} {z}";
                     return true;
             }
         }

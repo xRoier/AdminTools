@@ -8,27 +8,27 @@ namespace AdminTools
 {
     public class BreakDoorComponent : MonoBehaviour
     {
-        public Player player;
+        public Player Player;
         public bool breakAll = false;
-        string[] unbreakableDoorNames = { "079_FIRST", "079_SECOND", "372", "914", "CHECKPOINT_ENT", "CHECKPOINT_LCZ_A", "CHECKPOINT_LCZ_B", "GATE_A", "GATE_B", "SURFACE_GATE" };
+        string[] _unbreakableDoorNames = { "079_FIRST", "079_SECOND", "372", "914", "CHECKPOINT_ENT", "CHECKPOINT_LCZ_A", "CHECKPOINT_LCZ_B", "GATE_A", "GATE_B", "SURFACE_GATE" };
 
         public void Awake()
         {
             Handlers.Player.InteractingDoor += OnDoorInteract;
             Handlers.Player.Left += OnLeave;
-            player = Player.Get(gameObject);
-            Plugin.BdHubs.Add(player, this);
+            Player = Player.Get(gameObject);
+            Plugin.BdHubs.Add(Player, this);
         }
 
         private void OnLeave(LeftEventArgs ev)
         {
-            if (ev.Player == player)
+            if (ev.Player == Player)
                 Destroy(this);
         }
 
         private void OnDoorInteract(InteractingDoorEventArgs ev)
         {
-            if (ev.Player != player)
+            if (ev.Player != Player)
                 return;
 
             if (ev.Door is IDamageableDoor damageabledoor)
@@ -44,9 +44,9 @@ namespace AdminTools
         {
             Handlers.Player.InteractingDoor -= OnDoorInteract;
             Handlers.Player.Left -= OnLeave;
-            player.IsBypassModeEnabled = false;
+            Player.IsBypassModeEnabled = false;
             breakAll = false;
-            Plugin.BdHubs.Remove(player);
+            Plugin.BdHubs.Remove(Player);
         }
     }
 }

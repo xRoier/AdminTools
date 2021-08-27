@@ -45,23 +45,23 @@ namespace AdminTools.Commands.DropItem
                         return false;
                     }
 
-                    if (!Enum.TryParse(arguments.At(1), true, out ItemType Item))
+                    if (!Enum.TryParse(arguments.At(1), true, out ItemType item))
                     {
                         response = $"Invalid value for item type: {arguments.At(1)}";
                         return false;
                     }
 
-                    if (!uint.TryParse(arguments.At(2), out uint Amount) || Amount > 15)
+                    if (!uint.TryParse(arguments.At(2), out uint amount) || amount > 15)
                     {
-                        response = $"Invalid amount of item to drop: {arguments.At(2)} {(Amount > 15 ? "(\"Try a lower number that won't crash my servers, ty.\" - Galaxy119)" : "")}";
+                        response = $"Invalid amount of item to drop: {arguments.At(2)} {(amount > 15 ? "(\"Try a lower number that won't crash my servers, ty.\" - Galaxy119)" : "")}";
                         return false;
                     }
 
-                    foreach (Player Ply in Player.List)
-                        for (int i = 0; i < Amount; i++)
-                            EventHandlers.SpawnItem(Item, Ply.Position, Vector3.zero);
+                    foreach (Player ply in Player.List)
+                        for (int i = 0; i < amount; i++)
+                            EventHandlers.SpawnItem(item, ply.Position, Vector3.zero);
 
-                    response = $"{Amount} of {Item.ToString()} was spawned on everyone (\"Hehexd\" - Galaxy119)";
+                    response = $"{amount} of {item.ToString()} was spawned on everyone (\"Hehexd\" - Galaxy119)";
                     return true;
                 default:
                     if (arguments.Count != 3)
@@ -70,28 +70,28 @@ namespace AdminTools.Commands.DropItem
                         return false;
                     }
 
-                    Player Pl = Player.Get(arguments.At(0));
-                    if (Pl == null)
+                    Player pl = Player.Get(arguments.At(0));
+                    if (pl == null)
                     {
                         response = $"Player not found: {arguments.At(0)}";
                         return false;
                     }
 
-                    if (!Enum.TryParse(arguments.At(1), true, out ItemType It))
+                    if (!Enum.TryParse(arguments.At(1), true, out ItemType it))
                     {
                         response = $"Invalid value for item type: {arguments.At(1)}";
                         return false;
                     }
 
-                    if (!uint.TryParse(arguments.At(2), out uint Am) || Am > 200)
+                    if (!uint.TryParse(arguments.At(2), out uint am) || am > 200)
                     {
                         response = $"Invalid amount of item to drop: {arguments.At(2)}";
                         return false;
                     }
 
-                    for (int i = 0; i < Am; i++)
-                        EventHandlers.SpawnItem(It, Pl.Position, Vector3.zero);
-                    response = $"{Am} of {It.ToString()} was spawned on {Pl.Nickname} (\"Hehexd\" - Galaxy119)";
+                    for (int i = 0; i < am; i++)
+                        EventHandlers.SpawnItem(it, pl.Position, Vector3.zero);
+                    response = $"{am} of {it.ToString()} was spawned on {pl.Nickname} (\"Hehexd\" - Galaxy119)";
                     return true;
             }
         }

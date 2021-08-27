@@ -7,6 +7,8 @@ using System.Text;
 
 namespace AdminTools.Commands.Inventory
 {
+    using Exiled.API.Features.Items;
+
     public class See : ICommand
     {
         public string Command { get; } = "see";
@@ -30,33 +32,33 @@ namespace AdminTools.Commands.Inventory
                 return false;
             }
 
-            Player Ply = Player.Get(arguments.At(0));
-            if (Ply == null)
+            Player ply = Player.Get(arguments.At(0));
+            if (ply == null)
             {
                 response = $"Player not found: {arguments.At(0)}";
                 return false;
             }
 
-            StringBuilder InvBuilder = StringBuilderPool.Shared.Rent();
-            if (Ply.Inventory.items.Count != 0)
+            StringBuilder invBuilder = StringBuilderPool.Shared.Rent();
+            if (ply.Items.Count != 0)
             {
-                InvBuilder.Append("Player ");
-                InvBuilder.Append(Ply.Nickname);
-                InvBuilder.AppendLine(" has the following items in their inventory:");
-                foreach (global::Inventory.SyncItemInfo Item in Ply.Inventory.items)
+                invBuilder.Append("Player ");
+                invBuilder.Append(ply.Nickname);
+                invBuilder.AppendLine(" has the following items in their inventory:");
+                foreach (Item item in ply.Items)
                 {
-                    InvBuilder.Append("- ");
-                    InvBuilder.AppendLine(Item.id.ToString());
+                    invBuilder.Append("- ");
+                    invBuilder.AppendLine(item.Type.ToString());
                 }
             }
             else
             {
-                InvBuilder.Append("Player ");
-                InvBuilder.Append(Ply.Nickname);
-                InvBuilder.Append(" does not have any items in their inventory");
+                invBuilder.Append("Player ");
+                invBuilder.Append(ply.Nickname);
+                invBuilder.Append(" does not have any items in their inventory");
             }
-            string msg = InvBuilder.ToString();
-            StringBuilderPool.Shared.Return(InvBuilder);
+            string msg = invBuilder.ToString();
+            StringBuilderPool.Shared.Return(invBuilder);
             response = msg;
             return true;
         }

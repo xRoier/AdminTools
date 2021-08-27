@@ -5,6 +5,8 @@ using System;
 
 namespace AdminTools.Commands.Ball
 {
+    using System.Collections.Generic;
+
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     [CommandHandler(typeof(GameConsoleCommandHandler))]
     public class Ball : ParentCommand
@@ -34,38 +36,47 @@ namespace AdminTools.Commands.Ball
                 return false;
             }
 
+            List<Player> players = new List<Player>();
             switch (arguments.At(0)) 
             {
                 case "*":
                 case "all":
-                    foreach (Player Pl in Player.List)
+                    foreach (Player pl in Player.List)
                     {
-                        if (Pl.Role == RoleType.Spectator || Pl.Role == RoleType.None)
+                        if (pl.Role == RoleType.Spectator || pl.Role == RoleType.None)
                             continue;
 
-                        EventHandlers.SpawnBallOnPlayer(Pl);
+                        players.Add(pl);
                     }
-                    Cassie.Message("pitch_1.5 xmas_bouncyballs", true, false);
-                    response = "The Balls started bouncing";
-                    return true;
+
+                    break;
                 default:
-                    Player Ply = Player.Get(arguments.At(0));
-                    if (Ply == null)
+                    Player ply = Player.Get(arguments.At(0));
+                    if (ply == null)
                     {
                         response = $"Player not found: {arguments.At(0)}";
                         return false;
                     }
 
-                    if (Ply.Role == RoleType.Spectator || Ply.Role == RoleType.None)
+                    if (ply.Role == RoleType.Spectator || ply.Role == RoleType.None)
                     {
                         response = $"You cannot spawn a ball on that player right now";
                         return false;
                     }
 
-                    EventHandlers.SpawnBallOnPlayer(Ply);
-                    response = $"The Balls started bouncing for {Ply.Nickname}";
-                    return true;
+                    players.Add(ply);
+                    break;
             }
+
+            response = players.Count == 1
+                ? $"{players[0].Nickname} has received a bouncing ball!"
+                : $"The balls are bouncing for {players.Count} players!";
+            if (players.Count > 1)
+                Cassie.Message("pitch_1.5 xmas_bouncyballs", true, false);
+
+            foreach (Player p in players)
+                EventHandlers.SpawnGrenadeOnPlayer(p, GrenadeType.Scp018, 1f);
+            return true;
         }
     }
 }

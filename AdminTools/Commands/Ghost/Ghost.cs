@@ -38,35 +38,35 @@ namespace AdminTools.Commands.Ghost
             switch (arguments.At(0))
             {
                 case "clear":
-                    foreach (Player Pl in Player.List)
-                        Pl.IsInvisible = false;
+                    foreach (Player pl in Player.List)
+                        pl.IsInvisible = false;
 
                     response = "Everyone is no longer invisible";
                     return true;
                 case "*":
                 case "all":
-                    foreach (Player Pl in Player.List)
-                        Pl.IsInvisible = true;
+                    foreach (Player pl in Player.List)
+                        pl.IsInvisible = true;
 
                     response = "Everyone is now invisible";
                     return true;
                 default:
-                    Player Ply = Player.Get(arguments.At(0));
-                    if (Ply == null)
+                    Player ply = Player.Get(arguments.At(0));
+                    if (ply == null)
                     {
                         response = $"Player not found: {arguments.At(0)}";
                         return false;
                     }
 
-                    if (!Ply.IsInvisible)
+                    if (!ply.IsInvisible)
                     {
-                        Ply.IsInvisible = true;
-                        response = $"Player {Ply.Nickname} is now invisible";
+                        ply.IsInvisible = true;
+                        response = $"Player {ply.Nickname} is now invisible";
                     }
                     else
                     {
-                        Ply.IsInvisible = false;
-                        response = $"Player {Ply.Nickname} is no longer invisible";
+                        ply.IsInvisible = false;
+                        response = $"Player {ply.Nickname} is no longer invisible";
                     }
                     return true;
             }

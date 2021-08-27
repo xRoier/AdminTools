@@ -49,9 +49,9 @@ namespace AdminTools.Commands.Regeneration
                         return false;
                     }
 
-                    foreach (Player Ply in Plugin.RgnHubs.Keys)
-                        if (Ply.ReferenceHub.TryGetComponent(out RegenerationComponent RgCom))
-                            UnityEngine.Object.Destroy(RgCom);
+                    foreach (Player ply in Plugin.RgnHubs.Keys)
+                        if (ply.ReferenceHub.TryGetComponent(out RegenerationComponent rgCom))
+                            UnityEngine.Object.Destroy(rgCom);
 
                     response = "Regeneration has been removed from everyone";
                     return true;
@@ -62,21 +62,21 @@ namespace AdminTools.Commands.Regeneration
                         return false;
                     }
 
-                    StringBuilder PlayerLister = StringBuilderPool.Shared.Rent(Plugin.RgnHubs.Count != 0 ? "Players with regeneration on:\n" : "No players currently online have regeneration on");
+                    StringBuilder playerLister = StringBuilderPool.Shared.Rent(Plugin.RgnHubs.Count != 0 ? "Players with regeneration on:\n" : "No players currently online have regeneration on");
                     if (Plugin.RgnHubs.Count == 0)
                     {
-                        response = PlayerLister.ToString();
+                        response = playerLister.ToString();
                         return true;
                     }
 
-                    foreach (Player Ply in Plugin.RgnHubs.Keys)
+                    foreach (Player ply in Plugin.RgnHubs.Keys)
                     {
-                        PlayerLister.Append(Ply.Nickname);
-                        PlayerLister.Append(", ");
+                        playerLister.Append(ply.Nickname);
+                        playerLister.Append(", ");
                     }
 
-                    string msg = PlayerLister.ToString().Substring(0, PlayerLister.ToString().Length - 2);
-                    StringBuilderPool.Shared.Return(PlayerLister);
+                    string msg = playerLister.ToString().Substring(0, playerLister.ToString().Length - 2);
+                    StringBuilderPool.Shared.Return(playerLister);
                     response = msg;
                     return true;
                 case "heal":
@@ -119,9 +119,9 @@ namespace AdminTools.Commands.Regeneration
                         return false;
                     }
 
-                    foreach (Player Ply in Player.List)
-                        if (!Ply.ReferenceHub.TryGetComponent(out RegenerationComponent _))
-                            Ply.ReferenceHub.gameObject.AddComponent<RegenerationComponent>();
+                    foreach (Player ply in Player.List)
+                        if (!ply.ReferenceHub.TryGetComponent(out RegenerationComponent _))
+                            ply.ReferenceHub.gameObject.AddComponent<RegenerationComponent>();
 
                     response = "Everyone on the server can regenerate health now";
                     return true;
@@ -132,22 +132,22 @@ namespace AdminTools.Commands.Regeneration
                         return false;
                     }
 
-                    Player Pl = Player.Get(arguments.At(0));
-                    if (Pl == null)
+                    Player pl = Player.Get(arguments.At(0));
+                    if (pl == null)
                     {
                         response = $"Player not found: {arguments.At(0)}";
                         return false;
                     }
 
-                    if (!Pl.ReferenceHub.TryGetComponent(out RegenerationComponent rgnComponent))
+                    if (!pl.ReferenceHub.TryGetComponent(out RegenerationComponent rgnComponent))
                     {
-                        Pl.GameObject.AddComponent<RegenerationComponent>();
-                        response = $"Regeneration is on for {Pl.Nickname}";
+                        pl.GameObject.AddComponent<RegenerationComponent>();
+                        response = $"Regeneration is on for {pl.Nickname}";
                     }
                     else
                     {
                         UnityEngine.Object.Destroy(rgnComponent);
-                        response = $"Regeneration is off for {Pl.Nickname}";
+                        response = $"Regeneration is off for {pl.Nickname}";
                     }
                     return true;
             }

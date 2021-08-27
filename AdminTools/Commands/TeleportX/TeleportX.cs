@@ -38,41 +38,41 @@ namespace AdminTools.Commands.TeleportX
             {
                 case "*":
                 case "all":
-                    Player Ply = Player.Get(arguments.At(1));
-                    if (Ply == null)
+                    Player ply = Player.Get(arguments.At(1));
+                    if (ply == null)
                     {
                         response = $"Player not found: {arguments.At(1)}";
                         return false;
                     }
 
 
-                    foreach (Player Plyr in Player.List)
+                    foreach (Player plyr in Player.List)
                     {
-                        if (Plyr.Role == RoleType.Spectator || Ply.Role == RoleType.None)
+                        if (plyr.Role == RoleType.Spectator || ply.Role == RoleType.None)
                             continue;
 
-                        Plyr.Position = Ply.Position;
+                        plyr.Position = ply.Position;
                     }
 
-                    response = $"Everyone has been teleported to Player {Ply.Nickname}";
+                    response = $"Everyone has been teleported to Player {ply.Nickname}";
                     return true;
                 default:
-                    Player Pl = Player.Get(arguments.At(0));
-                    if (Pl == null)
+                    Player pl = Player.Get(arguments.At(0));
+                    if (pl == null)
                     {
                         response = $"Player not found: {arguments.At(0)}";
                         return false;
                     }
 
-                    Player Plr = Player.Get(arguments.At(1));
-                    if (Plr == null)
+                    Player plr = Player.Get(arguments.At(1));
+                    if (plr == null)
                     {
                         response = $"Player not found: {arguments.At(1)}";
                         return false;
                     }
 
-                    Pl.Position = Plr.Position;
-                    response = $"Player {Pl.Nickname} has been teleported to Player {Plr.Nickname}";
+                    pl.Position = plr.Position;
+                    response = $"Player {pl.Nickname} has been teleported to Player {plr.Nickname}";
                     return true;
             }
         }

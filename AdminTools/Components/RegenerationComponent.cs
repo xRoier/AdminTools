@@ -8,19 +8,19 @@ namespace AdminTools
 {
     public class RegenerationComponent : MonoBehaviour
     {
-        private Player player;
-        CoroutineHandle Handle;
+        private Player _player;
+        CoroutineHandle _handle;
         public void Awake()
         {
-            player = Player.Get(gameObject);
-            Handle = Timing.RunCoroutine(HealHealth(player));
-            Plugin.RgnHubs.Add(player, this);
+            _player = Player.Get(gameObject);
+            _handle = Timing.RunCoroutine(HealHealth(_player));
+            Plugin.RgnHubs.Add(_player, this);
         }
 
         public void OnDestroy()
         {
-            Timing.KillCoroutines(Handle);
-            Plugin.RgnHubs.Remove(player);
+            Timing.KillCoroutines(_handle);
+            Plugin.RgnHubs.Remove(_player);
         }
 
         public IEnumerator<float> HealHealth(Player ply)

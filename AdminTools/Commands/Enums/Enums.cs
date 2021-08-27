@@ -22,36 +22,36 @@ namespace AdminTools.Commands.Enums
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
             EventHandlers.LogCommandUsed((CommandSender)sender, EventHandlers.FormatArguments(arguments, 0));
-            StringBuilder ListBuilder = StringBuilderPool.Shared.Rent();
-            ListBuilder.Append("Here are the following enums you can use in commands:\n\nBreakType: ");
-            foreach (BreakType Bt in Enum.GetValues(typeof(BreakType)))
+            StringBuilder listBuilder = StringBuilderPool.Shared.Rent();
+            listBuilder.Append("Here are the following enums you can use in commands:\n\nBreakType: ");
+            foreach (BreakType bt in Enum.GetValues(typeof(BreakType)))
             {
-                ListBuilder.Append(Bt.ToString());
-                ListBuilder.Append(" ");
+                listBuilder.Append(bt.ToString());
+                listBuilder.Append(" ");
             }
-            ListBuilder.AppendLine();
-            ListBuilder.Append("GrenadeType: ");
-            foreach (GrenadeType Gt in Enum.GetValues(typeof(GrenadeType)))
+            listBuilder.AppendLine();
+            listBuilder.Append("GrenadeType: ");
+            foreach (GrenadeType gt in Enum.GetValues(typeof(GrenadeType)))
             {
-                ListBuilder.Append(Gt.ToString());
-                ListBuilder.Append(" ");
+                listBuilder.Append(gt.ToString());
+                listBuilder.Append(" ");
             }
-            ListBuilder.AppendLine();
-            ListBuilder.Append("VectorAxis: ");
-            foreach (VectorAxis Va in Enum.GetValues(typeof(VectorAxis)))
+            listBuilder.AppendLine();
+            listBuilder.Append("VectorAxis: ");
+            foreach (VectorAxis va in Enum.GetValues(typeof(VectorAxis)))
             {
-                ListBuilder.Append(Va.ToString());
-                ListBuilder.Append(" ");
+                listBuilder.Append(va.ToString());
+                listBuilder.Append(" ");
             }
-            ListBuilder.AppendLine();
-            ListBuilder.Append("PositionModifier: ");
-            foreach (PositionModifier Pm in Enum.GetValues(typeof(PositionModifier)))
+            listBuilder.AppendLine();
+            listBuilder.Append("PositionModifier: ");
+            foreach (PositionModifier pm in Enum.GetValues(typeof(PositionModifier)))
             {
-                ListBuilder.Append(Pm.ToString());
-                ListBuilder.Append(" ");
+                listBuilder.Append(pm.ToString());
+                listBuilder.Append(" ");
             }
-            string message = ListBuilder.ToString();
-            StringBuilderPool.Shared.Return(ListBuilder);
+            string message = listBuilder.ToString();
+            StringBuilderPool.Shared.Return(listBuilder);
             response = message;
             return true;
         }

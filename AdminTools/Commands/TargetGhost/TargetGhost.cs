@@ -12,7 +12,7 @@ namespace AdminTools.Commands.TargetGhost
     [CommandHandler(typeof(GameConsoleCommandHandler))]
     public class TargetGhost : ParentCommand
     {
-        public const string HELP_STR = "Usage: targetghost (player id / name) (player id / name) ...";
+        public const string HelpStr = "Usage: targetghost (player id / name) (player id / name) ...";
 
         public TargetGhost() => LoadGeneratedCommands();
 
@@ -35,7 +35,7 @@ namespace AdminTools.Commands.TargetGhost
 
             if (arguments.Count < 2)
             {
-                response = HELP_STR;
+                response = HelpStr;
                 return false;
             }
 

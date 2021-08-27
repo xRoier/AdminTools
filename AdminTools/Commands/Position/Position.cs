@@ -42,13 +42,13 @@ namespace AdminTools.Commands.Position
             {
                 case "*":
                 case "all":
-                    if (!Enum.TryParse(arguments.At(1), true, out PositionModifier Mod))
+                    if (!Enum.TryParse(arguments.At(1), true, out PositionModifier mod))
                     {
                         response = $"Invalid position modifier: {arguments.At(0)}";
                         return false;
                     }
 
-                    switch (Mod)
+                    switch (mod)
                     {
                         case PositionModifier.Set:
                             if (arguments.Count != 5)
@@ -76,9 +76,9 @@ namespace AdminTools.Commands.Position
                                 response = "There are no players currently online";
                                 return true;
                             }
-                            foreach (Player Ply in Player.List)
+                            foreach (Player ply in Player.List)
                             {
-                                Ply.Position = new Vector3(xval, yval, zval);
+                                ply.Position = new Vector3(xval, yval, zval);
                             }
                             response = $"All player's positions have been set to {xval} {yval} {zval}";
                             return true;
@@ -88,29 +88,29 @@ namespace AdminTools.Commands.Position
                                 response = "Usage: position (all / *) (get)";
                                 return false;
                             }
-                            StringBuilder PositionBuilder = StringBuilderPool.Shared.Rent();
+                            StringBuilder positionBuilder = StringBuilderPool.Shared.Rent();
                             if (Player.List.Count() == 0)
                             {
                                 response = "There are no players currently online";
                                 return true;
                             }
-                            PositionBuilder.Append("\n");
-                            foreach (Player Ply in Player.List)
+                            positionBuilder.Append("\n");
+                            foreach (Player ply in Player.List)
                             {
-                                PositionBuilder.Append(Ply.Nickname);
-                                PositionBuilder.Append("'s (");
-                                PositionBuilder.Append(Ply.Id);
-                                PositionBuilder.Append(")");
-                                PositionBuilder.Append(" position: ");
-                                PositionBuilder.Append(Ply.Position.x);
-                                PositionBuilder.Append(" ");
-                                PositionBuilder.Append(Ply.Position.y);
-                                PositionBuilder.Append(" ");
-                                PositionBuilder.AppendLine(Ply.Position.z.ToString());
+                                positionBuilder.Append(ply.Nickname);
+                                positionBuilder.Append("'s (");
+                                positionBuilder.Append(ply.Id);
+                                positionBuilder.Append(")");
+                                positionBuilder.Append(" position: ");
+                                positionBuilder.Append(ply.Position.x);
+                                positionBuilder.Append(" ");
+                                positionBuilder.Append(ply.Position.y);
+                                positionBuilder.Append(" ");
+                                positionBuilder.AppendLine(ply.Position.z.ToString());
                             }
-                            string Message = PositionBuilder.ToString();
-                            StringBuilderPool.Shared.Return(PositionBuilder);
-                            response = Message;
+                            string message = positionBuilder.ToString();
+                            StringBuilderPool.Shared.Return(positionBuilder);
+                            response = message;
                             return true;
                         case PositionModifier.Add:
                             if (arguments.Count != 4)
@@ -118,7 +118,7 @@ namespace AdminTools.Commands.Position
                                 response = "Usage: position (all / *) (add) (x, y, or z) (value)";
                                 return false;
                             }
-                            if (!Enum.TryParse(arguments.At(2), true, out VectorAxis Axis))
+                            if (!Enum.TryParse(arguments.At(2), true, out VectorAxis axis))
                             {
                                 response = $"Invalid value for vector axis: {arguments.At(2)}";
                                 return false;
@@ -128,23 +128,23 @@ namespace AdminTools.Commands.Position
                                 response = $"Invalid value for position: {arguments.At(3)}";
                                 return false;
                             }
-                            switch (Axis)
+                            switch (axis)
                             {
                                 case VectorAxis.X:
-                                    foreach (Player Ply in Player.List)
-                                        Ply.Position = new Vector3(Ply.Position.x + val, Ply.Position.y, Ply.Position.z);
+                                    foreach (Player ply in Player.List)
+                                        ply.Position = new Vector3(ply.Position.x + val, ply.Position.y, ply.Position.z);
 
                                     response = $"Every player's x position has been added by {val}";
                                     return true;
                                 case VectorAxis.Y:
-                                    foreach (Player Ply in Player.List)
-                                        Ply.Position = new Vector3(Ply.Position.x, Ply.Position.y + val, Ply.Position.z);
+                                    foreach (Player ply in Player.List)
+                                        ply.Position = new Vector3(ply.Position.x, ply.Position.y + val, ply.Position.z);
 
                                     response = $"Every player's y position has been added by {val}";
                                     return true;
                                 case VectorAxis.Z:
-                                    foreach (Player Ply in Player.List)
-                                        Ply.Position = new Vector3(Ply.Position.x, Ply.Position.y, Ply.Position.z + val);
+                                    foreach (Player ply in Player.List)
+                                        ply.Position = new Vector3(ply.Position.x, ply.Position.y, ply.Position.z + val);
 
                                     response = $"Every player's z position has been added by {val}";
                                     return true;
@@ -156,20 +156,20 @@ namespace AdminTools.Commands.Position
                     }
                     break;
                 default:
-                    Player Pl = Player.Get(arguments.At(0));
-                    if (Pl == null)
+                    Player pl = Player.Get(arguments.At(0));
+                    if (pl == null)
                     {
                         response = $"Player not found: {arguments.At(0)}";
                         return false;
                     }
 
-                    if (!Enum.TryParse(arguments.At(1), true, out PositionModifier Modf))
+                    if (!Enum.TryParse(arguments.At(1), true, out PositionModifier modf))
                     {
                         response = $"Invalid position modifier: {arguments.At(1)}";
                         return false;
                     }
 
-                    switch (Modf)
+                    switch (modf)
                     {
                         case PositionModifier.Set:
                             if (arguments.Count != 5)
@@ -193,8 +193,8 @@ namespace AdminTools.Commands.Position
                                 return false;
                             }
 
-                            Pl.Position = new Vector3(xval, yval, zval);
-                            response = $"Player {Pl.Nickname}'s positions have been set to {xval} {yval} {zval}";
+                            pl.Position = new Vector3(xval, yval, zval);
+                            response = $"Player {pl.Nickname}'s positions have been set to {xval} {yval} {zval}";
                             return true;
                         case PositionModifier.Get:
                             if (arguments.Count != 2)
@@ -203,7 +203,7 @@ namespace AdminTools.Commands.Position
                                 return false;
                             }
 
-                            response = $"Player {Pl.Nickname}'s ({Pl.Id}) position is {Pl.Position.x} {Pl.Position.y} {Pl.Position.z}";
+                            response = $"Player {pl.Nickname}'s ({pl.Id}) position is {pl.Position.x} {pl.Position.y} {pl.Position.z}";
                             return true;
                         case PositionModifier.Add:
                             if (arguments.Count != 4)
@@ -211,7 +211,7 @@ namespace AdminTools.Commands.Position
                                 response = "Usage: position (player id / name) (add) (x, y, or z) (value)";
                                 return false;
                             }
-                            if (!Enum.TryParse(arguments.At(2), true, out VectorAxis Axis))
+                            if (!Enum.TryParse(arguments.At(2), true, out VectorAxis axis))
                             {
                                 response = $"Invalid value for vector axis: {arguments.At(2)}";
                                 return false;
@@ -221,19 +221,19 @@ namespace AdminTools.Commands.Position
                                 response = $"Invalid value for position: {arguments.At(2)}";
                                 return false;
                             }
-                            switch (Axis)
+                            switch (axis)
                             {
                                 case VectorAxis.X:
-                                    Pl.Position = new Vector3(Pl.Position.x + val, Pl.Position.y, Pl.Position.z);
-                                    response = $"Player {Pl.Nickname}'s x position has been added by {val}";
+                                    pl.Position = new Vector3(pl.Position.x + val, pl.Position.y, pl.Position.z);
+                                    response = $"Player {pl.Nickname}'s x position has been added by {val}";
                                     return true;
                                 case VectorAxis.Y:
-                                    Pl.Position = new Vector3(Pl.Position.x, Pl.Position.y + val, Pl.Position.z);
-                                    response = $"Player {Pl.Nickname}'s y position has been added by {val}";
+                                    pl.Position = new Vector3(pl.Position.x, pl.Position.y + val, pl.Position.z);
+                                    response = $"Player {pl.Nickname}'s y position has been added by {val}";
                                     return true;
                                 case VectorAxis.Z:
-                                    Pl.Position = new Vector3(Pl.Position.x, Pl.Position.y, Pl.Position.z + val);
-                                    response = $"Player {Pl.Nickname}'s z position has been added by {val}";
+                                    pl.Position = new Vector3(pl.Position.x, pl.Position.y, pl.Position.z + val);
+                                    response = $"Player {pl.Nickname}'s z position has been added by {val}";
                                     return true;
                             }
                             break;

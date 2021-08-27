@@ -7,7 +7,6 @@ using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
 using Exiled.Permissions;
-using Grenades;
 using Interactables.Interobjects;
 using MEC;
 using Mirror;
@@ -19,46 +18,46 @@ using Object = UnityEngine.Object;
 
 namespace AdminTools
 {
+	using Exiled.API.Extensions;
+	using Exiled.API.Features.Items;
+	using InventorySystem.Items.Firearms.Attachments;
+	using InventorySystem.Items.ThrowableProjectiles;
+	using Ragdoll = Exiled.API.Features.Ragdoll;
+
 	public class EventHandlers
 	{
-		private readonly Plugin plugin;
-		public EventHandlers(Plugin plugin) => this.plugin = plugin;
+		private readonly Plugin _plugin;
+		public EventHandlers(Plugin plugin) => this._plugin = plugin;
 
-		public static void LogCommandUsed(CommandSender sender, string Command)
+		public static void LogCommandUsed(CommandSender sender, string command)
 		{
 			string data =
-				$"{DateTime.Now}: {sender.Nickname} ({sender.SenderId}) executed: {Command} {Environment.NewLine}";
+				$"{DateTime.Now}: {sender.Nickname} ({sender.SenderId}) executed: {command} {Environment.NewLine}";
 			File.AppendAllText(Paths.Log, data);
 		}
 
-		public void OnCommand(SendingRemoteAdminCommandEventArgs ev)
-		{
-			if (ev.Name.Contains("REQUEST_DATA PLAYER_LIST"))
-				return;
-		}
-		
 		public void OnDoorOpen(InteractingDoorEventArgs ev)
 		{
-			if (Plugin.PryGateHubs.Contains(ev.Player) && ev.Door is PryableDoor pdoor)
-				pdoor.TryPryGate();
+			if (Plugin.PryGateHubs.Contains(ev.Player))
+				ev.Door.TryPryOpen();
 		}
 
 		public static string FormatArguments(ArraySegment<string> sentence, int index)
 		{
-			StringBuilder SB = StringBuilderPool.Shared.Rent();
+			StringBuilder sb = StringBuilderPool.Shared.Rent();
 			foreach (string word in sentence.Segment(index))
 			{
-				SB.Append(word);
-				SB.Append(" ");
+				sb.Append(word);
+				sb.Append(" ");
 			}
-			string msg = SB.ToString();
-			StringBuilderPool.Shared.Return(SB);
+			string msg = sb.ToString();
+			StringBuilderPool.Shared.Return(sb);
 			return msg;
 		}
 
-		public static void SpawnDummyModel(Player Ply, Vector3 position, Quaternion rotation, RoleType role, float x, float y, float z, out int DummyIndex)
+		public static void SpawnDummyModel(Player ply, Vector3 position, Quaternion rotation, RoleType role, float x, float y, float z, out int dummyIndex)
 		{
-			DummyIndex = 0;
+			dummyIndex = 0;
 			GameObject obj =
 				Object.Instantiate(
 					NetworkManager.singleton.spawnPrefabs.FirstOrDefault(p => p.gameObject.name == "Player"));
@@ -67,7 +66,6 @@ namespace AdminTools
 				Log.Error("CCM is null, this can cause problems!");
 			ccm.CurClass = role;
 			ccm.GodMode = true;
-			ccm.OldRefreshPlyModel(PlayerManager.localPlayer);
 			obj.GetComponent<NicknameSync>().Network_myNickSync = "Dummy";
 			obj.GetComponent<QueryProcessor>().PlayerId = 9999;
 			obj.GetComponent<QueryProcessor>().NetworkPlayerId = 9999;
@@ -75,28 +73,25 @@ namespace AdminTools
 			obj.transform.position = position;
 			obj.transform.rotation = rotation;
 			NetworkServer.Spawn(obj);
-			if (Plugin.DumHubs.TryGetValue(Ply, out List<GameObject> objs))
+			if (Plugin.DumHubs.TryGetValue(ply, out List<GameObject> objs))
 			{
 				objs.Add(obj);
 			}
 			else
 			{
-				Plugin.DumHubs.Add(Ply, new List<GameObject>());
-				Plugin.DumHubs[Ply].Add(obj);
-				DummyIndex = Plugin.DumHubs[Ply].Count();
+				Plugin.DumHubs.Add(ply, new List<GameObject>());
+				Plugin.DumHubs[ply].Add(obj);
+				dummyIndex = Plugin.DumHubs[ply].Count();
 			}
-			if (DummyIndex != 1)
-				DummyIndex = objs.Count();
+			if (dummyIndex != 1)
+				dummyIndex = objs.Count();
 		}
 
 		public static IEnumerator<float> SpawnBodies(Player player, RoleType role, int count)
 		{
 			for (int i = 0; i < count; i++)
 			{
-				player.GameObject.GetComponent<RagdollManager>().SpawnRagdoll(player.Position + Vector3.up * 5,
-					Quaternion.identity, Vector3.zero, (int)role,
-					new PlayerStats.HitInfo(1000f, player.UserId, DamageTypes.Falldown,
-						player.Id), false, "SCP-343", "SCP-343", 0);
+				Ragdoll.Spawn(role, DamageTypes.Falldown, "SCP-343", player.Position, default, default, false, 0);
 				yield return Timing.WaitForSeconds(0.15f);
 			}
 		}
@@ -110,9 +105,9 @@ namespace AdminTools
             }
         }
 
-        public static void SpawnWorkbench(Player Ply, Vector3 position, Vector3 rotation, Vector3 size, out int BenchIndex)
+        public static void SpawnWorkbench(Player ply, Vector3 position, Vector3 rotation, Vector3 size, out int benchIndex)
 		{
-			BenchIndex = 0;
+			benchIndex = 0;
 			GameObject bench =
 				Object.Instantiate(
 					NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == "Work Station"));
@@ -124,26 +119,26 @@ namespace AdminTools
 			offset.scale = Vector3.one;
 			bench.gameObject.transform.localScale = size;
 			NetworkServer.Spawn(bench);
-			if (Plugin.BchHubs.TryGetValue(Ply, out List<GameObject> objs))
+			if (Plugin.BchHubs.TryGetValue(ply, out List<GameObject> objs))
 			{
 				objs.Add(bench);
 			}
 			else
 			{
-				Plugin.BchHubs.Add(Ply, new List<GameObject>());
-				Plugin.BchHubs[Ply].Add(bench);
-				BenchIndex = Plugin.BchHubs[Ply].Count();
+				Plugin.BchHubs.Add(ply, new List<GameObject>());
+				Plugin.BchHubs[ply].Add(bench);
+				benchIndex = Plugin.BchHubs[ply].Count();
 			}
-			if (BenchIndex != 1)
-				BenchIndex = objs.Count();
+			if (benchIndex != 1)
+				benchIndex = objs.Count();
 			bench.transform.localPosition = offset.position;
 			bench.transform.localRotation = Quaternion.Euler(offset.rotation);
-			bench.AddComponent<WorkStation>();
+			bench.AddComponent<WorkstationController>();
 		}
 
 		public static void SpawnItem(ItemType type, Vector3 pos, Vector3 rot)
 		{
-			Exiled.API.Extensions.Item.Spawn(type, 0, pos);
+			new Item(type).Spawn(pos, Quaternion.Euler(rot));
 		}
 
 		public static void SetPlayerScale(GameObject target, float x, float y, float z)
@@ -163,7 +158,7 @@ namespace AdminTools
 						playerCon.Send(destroyMessage, 0);
 
 					object[] parameters = new object[] { identity, playerCon };
-					typeof(NetworkServer).InvokeStaticMethod("SendSpawnMessage", parameters);
+					Extensions.InvokeStaticMethod(typeof(NetworkServer), "SendSpawnMessage", parameters);
 				}
 			}
 			catch (Exception e)
@@ -191,7 +186,7 @@ namespace AdminTools
 					playerCon.Send(destroyMessage, 0);
 
 					object[] parameters = new object[] { identity, playerCon };
-					typeof(NetworkServer).InvokeStaticMethod("SendSpawnMessage", parameters);
+					Extensions.InvokeStaticMethod(typeof(NetworkServer), "SendSpawnMessage", parameters);
 				}
 			}
 			catch (Exception e)
@@ -243,13 +238,13 @@ namespace AdminTools
 
 		public static IEnumerator<float> DoJail(Player player, bool skipadd = false)
 		{
-			List<Inventory.SyncItemInfo> items = new List<Inventory.SyncItemInfo>();
-			Dictionary<AmmoType, uint> ammo = new Dictionary<AmmoType, uint>();
+			List<Item> items = new List<Item>();
+			Dictionary<AmmoType, ushort> ammo = new Dictionary<AmmoType, ushort>();
 			foreach(AmmoType type in (AmmoType []) Enum.GetValues(typeof(AmmoType)))
 			{
-				ammo[type] = player.Ammo[(int)type];
+				ammo[type] = player.Ammo[ItemExtensions.GetItemType(type)];
 			}
-			foreach (Inventory.SyncItemInfo item in player.Inventory.items)
+			foreach (Item item in player.Items)
 				items.Add(item);
 			if (!skipadd)
 				Plugin.JailedPlayers.Add(new Jailed
@@ -268,7 +263,7 @@ namespace AdminTools
 			yield return Timing.WaitForSeconds(1f);
 			player.Role = RoleType.Tutorial;
 			player.Position = new Vector3(53f, 1020f, -44f);
-			player.Inventory.items.Clear();
+			player.ClearInventory();
 		}
 
 		public static IEnumerator<float> DoUnJail(Player player)
@@ -283,7 +278,7 @@ namespace AdminTools
 				player.Position = jail.Position;
 				foreach (AmmoType type in (AmmoType[])Enum.GetValues(typeof(AmmoType)))
 				{
-					player.Ammo[(int)type] = jail.Ammo[type];
+					player.Ammo[type.GetItemType()] = jail.Ammo[type];
 				}
 			}
 			else
@@ -293,42 +288,23 @@ namespace AdminTools
 			Plugin.JailedPlayers.Remove(jail);
 		}
 
-		public static void SpawnGrenadeOnPlayer(Player Player, GrenadeType Type, float Timer)
+		public static void SpawnGrenadeOnPlayer(Player player, GrenadeType type, float timer)
 		{
-			Vector3 spawnrand = new Vector3(UnityEngine.Random.Range(0f, 2f), UnityEngine.Random.Range(0f, 2f), UnityEngine.Random.Range(0f, 2f));
-			GrenadeManager gm = Player.ReferenceHub.gameObject.GetComponent<GrenadeManager>();
-			GrenadeSettings gs = null;
-			switch (Type)
+			Vector3 spawnrand = player.Position + new Vector3(UnityEngine.Random.Range(0f, 2f), UnityEngine.Random.Range(0f, 2f), UnityEngine.Random.Range(0f, 2f));
+			EffectGrenade grenade;
+			switch (type)
 			{
-				case GrenadeType.Frag:
-					gs = gm.availableGrenades.FirstOrDefault(g => g.inventoryID == ItemType.GrenadeFrag);
-					break;
 				case GrenadeType.Flash:
-					gs = gm.availableGrenades.FirstOrDefault(g => g.inventoryID == ItemType.GrenadeFlash);
+					grenade = (EffectGrenade) new FlashGrenade(ItemType.GrenadeFlash){FuseTime = timer}.Spawn(spawnrand).Base;
 					break;
-				case GrenadeType.Scp018:
-					gs = gm.availableGrenades.FirstOrDefault(g => g.inventoryID == ItemType.SCP018);
+				default:
+					grenade = (EffectGrenade) new ExplosiveGrenade(type == GrenadeType.Scp018
+						? ItemType.SCP018
+						: ItemType.GrenadeHE){FuseTime = timer}.Spawn(spawnrand).Base;
 					break;
 			}
-			Grenade grenade = Object.Instantiate(gs.grenadeInstance).GetComponent<Grenade>();
-			if (Type != GrenadeType.Scp018)
-			{
-				grenade.fuseDuration = Timer;
-				grenade.FullInitData(gm, Player.Position, Quaternion.Euler(grenade.throwStartAngle), grenade.throwLinearVelocityOffset, grenade.throwAngularVelocity, Player.Team);
-			}
-			else
-				grenade.InitData(gm, spawnrand, Vector3.zero);
-			NetworkServer.Spawn(grenade.gameObject);
-		}
 
-		public static void SpawnBallOnPlayer(Player Player)
-		{
-			Vector3 spawnrand = new Vector3(UnityEngine.Random.Range(0f, 2f), UnityEngine.Random.Range(0f, 2f), UnityEngine.Random.Range(0f, 2f));
-			GrenadeManager gm = Player.ReferenceHub.GetComponent<GrenadeManager>();
-			GrenadeSettings ball = gm.availableGrenades.FirstOrDefault(g => g.inventoryID == ItemType.SCP018);
-			Grenade component = Object.Instantiate(ball.grenadeInstance).GetComponent<Scp018Grenade>();
-			component.InitData(gm, spawnrand, Vector3.zero);
-			NetworkServer.Spawn(component.gameObject);
+			grenade.ServerActivate();
 		}
 
 		public void OnPlayerVerified(VerifiedEventArgs ev)
@@ -338,13 +314,13 @@ namespace AdminTools
 				if (Plugin.JailedPlayers.Any(j => j.Userid == ev.Player.UserId))
 					Timing.RunCoroutine(DoJail(ev.Player, true));
 
-				if (File.ReadAllText(plugin.OverwatchFilePath).Contains(ev.Player.UserId))
+				if (File.ReadAllText(_plugin.OverwatchFilePath).Contains(ev.Player.UserId))
 				{
 					Log.Debug($"Putting {ev.Player.UserId} into overwatch.");
 					Timing.CallDelayed(1, () => ev.Player.IsOverwatchEnabled = true);
 				}
 
-				if (File.ReadAllText(plugin.HiddenTagsFilePath).Contains(ev.Player.UserId))
+				if (File.ReadAllText(_plugin.HiddenTagsFilePath).Contains(ev.Player.UserId))
 				{
 					Log.Debug($"Hiding {ev.Player.UserId}'s tag.");
 					Timing.CallDelayed(1, () => ev.Player.BadgeHidden = true);
@@ -379,8 +355,8 @@ namespace AdminTools
 		{
 			try
 			{
-				List<string> overwatchRead = File.ReadAllLines(plugin.OverwatchFilePath).ToList();
-				List<string> tagsRead = File.ReadAllLines(plugin.HiddenTagsFilePath).ToList();
+				List<string> overwatchRead = File.ReadAllLines(_plugin.OverwatchFilePath).ToList();
+				List<string> tagsRead = File.ReadAllLines(_plugin.HiddenTagsFilePath).ToList();
 
 				foreach (Player player in Player.List)
 				{
@@ -401,8 +377,8 @@ namespace AdminTools
 					Log.Debug($"{s} is in overwatch.");
 				foreach (string s in tagsRead)
 					Log.Debug($"{s} has their tag hidden.");
-				File.WriteAllLines(plugin.OverwatchFilePath, overwatchRead);
-				File.WriteAllLines(plugin.HiddenTagsFilePath, tagsRead);
+				File.WriteAllLines(_plugin.OverwatchFilePath, overwatchRead);
+				File.WriteAllLines(_plugin.HiddenTagsFilePath, tagsRead);
 
 				// Update all the jails that it is no longer the current round, so when they are unjailed they don't teleport into the void.
 				foreach (Jailed jail in Plugin.JailedPlayers)
@@ -431,7 +407,7 @@ namespace AdminTools
 
 		public void OnSetClass(ChangingRoleEventArgs ev)
 		{
-			if (plugin.Config.GodTuts)
+			if (_plugin.Config.GodTuts)
 				ev.Player.IsGodModeEnabled = ev.NewRole == RoleType.Tutorial;
 		}
 

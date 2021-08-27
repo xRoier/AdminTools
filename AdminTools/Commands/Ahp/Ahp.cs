@@ -5,6 +5,8 @@ using System;
 
 namespace AdminTools.Commands.Ahp
 {
+    using System.Collections.Generic;
+
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     [CommandHandler(typeof(GameConsoleCommandHandler))]
     public class Ahp : ParentCommand
@@ -34,39 +36,38 @@ namespace AdminTools.Commands.Ahp
                 return false;
             }
 
+            List<Player> players = new List<Player>();
+            if (!ushort.TryParse(arguments.At(1), out ushort value))
+            {
+                response = $"Invalid value for AHP: {value}";
+                return false;
+            }
             switch (arguments.At(0))
             {
                 case "*":
                 case "all":
-                    if (!int.TryParse(arguments.At(1), out int value) || value < 0)
-                    {
-                        response = $"Invalid value for AHP: {value}";
-                        return false;
-                    }
-
-                    foreach (Player Ply in Player.List)
-                        Ply.ArtificialHealth = value;
-
-                    response = $"Everyone's AHP was set to {value}";
-                    return true;
+                    foreach (Player ply in Player.List)
+                        players.Add(ply);
+                    break;
                 default:
-                    Player Pl = Player.Get(arguments.At(0));
-                    if (Pl == null)
+                    Player player = Player.Get(arguments.At(0));
+                    if (player == null)
                     {
                         response = $"Player not found: {arguments.At(0)}";
                         return false;
                     }
 
-                    if (!int.TryParse(arguments.At(1), out int val) || val < 0)
-                    {
-                        response = $"Invalid value for AHP: {val}";
-                        return false;
-                    }
-
-                    Pl.ArtificialHealth = val;
-                    response = $"Player {Pl.Nickname}'s AHP was set to {val}";
-                    return true;
+                    break;
             }
+
+            response = string.Empty;
+            foreach (Player p in players)
+            {
+                p.ArtificialHealth = value;
+                response += $"\n{p.Nickname}'s AHP has been set to {value}";
+            }
+
+            return true;
         }
     }
 }

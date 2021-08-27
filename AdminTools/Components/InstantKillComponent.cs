@@ -7,18 +7,18 @@ namespace AdminTools
 {
     public class InstantKillComponent : MonoBehaviour
     {
-        public Player player;
+        public Player Player;
         public void Awake()
         {
-            player = Player.Get(gameObject);
+            Player = Player.Get(gameObject);
             Handlers.Player.Hurting += RunWhenPlayerIsHurt;
             Handlers.Player.Left += OnLeave;
-            Plugin.IkHubs.Add(player, this);
+            Plugin.IkHubs.Add(Player, this);
         }
 
         private void OnLeave(LeftEventArgs ev)
         {
-            if (ev.Player == player)
+            if (ev.Player == Player)
                 Destroy(this);
         }
 
@@ -26,12 +26,12 @@ namespace AdminTools
         {
             Handlers.Player.Hurting -= RunWhenPlayerIsHurt;
             Handlers.Player.Left -= OnLeave;
-            Plugin.IkHubs.Remove(player);
+            Plugin.IkHubs.Remove(Player);
         }
 
         public void RunWhenPlayerIsHurt(HurtingEventArgs ev)
         {
-            if (ev.Attacker != ev.Target && ev.Attacker == player)
+            if (ev.Attacker != ev.Target && ev.Attacker == Player)
                 ev.Amount = int.MaxValue;
         }
     }

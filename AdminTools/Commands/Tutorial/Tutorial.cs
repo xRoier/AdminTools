@@ -13,7 +13,7 @@ namespace AdminTools.Commands.Tutorial
     [CommandHandler(typeof(GameConsoleCommandHandler))]
     public class Tutorial : ParentCommand
     {
-        Player Ply;
+        Player _ply;
 
         public Tutorial() => LoadGeneratedCommands();
 
@@ -46,7 +46,7 @@ namespace AdminTools.Commands.Tutorial
                             return false;
                         }
 
-                        Ply = Player.Get(plysend.ReferenceHub);
+                        _ply = Player.Get(plysend.ReferenceHub);
                     }
                     else
                     {
@@ -56,15 +56,15 @@ namespace AdminTools.Commands.Tutorial
                             return false;
                         }
 
-                        Ply = Player.Get(arguments.At(0));
-                        if (Ply == null)
+                        _ply = Player.Get(arguments.At(0));
+                        if (_ply == null)
                         {
                             response = $"Player not found: {arguments.At(0)}";
                             return false;
                         }
                     }
 
-                    DoTutorialFunction(Ply, out response);
+                    DoTutorialFunction(_ply, out response);
                     return true;
                 default:
                     response = "Usage: tutorial (optional: id / name)";
@@ -72,25 +72,25 @@ namespace AdminTools.Commands.Tutorial
             }
         }
 
-        private IEnumerator<float> SetClassAsTutorial(Player Ply) 
+        private IEnumerator<float> SetClassAsTutorial(Player ply) 
         {
-            Vector3 OldPos = Ply.Position;
-            Ply.Role = RoleType.Tutorial;
+            Vector3 oldPos = ply.Position;
+            ply.Role = RoleType.Tutorial;
             yield return Timing.WaitForSeconds(0.5f);
-            Ply.Position = OldPos;
+            ply.Position = oldPos;
         }
 
-        private void DoTutorialFunction(Player Ply, out string response)
+        private void DoTutorialFunction(Player ply, out string response)
         {
-            if (Ply.Role != RoleType.Tutorial)
+            if (ply.Role != RoleType.Tutorial)
             {
-                Timing.RunCoroutine(SetClassAsTutorial(Ply));
-                response = $"Player {Ply.Nickname} is now set to tutorial";
+                Timing.RunCoroutine(SetClassAsTutorial(ply));
+                response = $"Player {ply.Nickname} is now set to tutorial";
             }
             else
             {
-                Ply.Role = RoleType.Spectator;
-                response = $"Player {Ply.Nickname} is now set to spectator";
+                ply.Role = RoleType.Spectator;
+                response = $"Player {ply.Nickname} is now set to spectator";
             }
         }
     }

@@ -44,19 +44,19 @@ namespace AdminTools.Commands.Hp
                         return false;
                     }
 
-                    foreach (Player Pl in Player.List)
+                    foreach (Player pl in Player.List)
                     {
                         if (value <= 0)
-                            Pl.Kill();
+                            pl.Kill();
                         else
-                            Pl.Health = value;
+                            pl.Health = value;
                     }
 
                     response = $"Everyone's HP was set to {value}";
                     return true;
                 default:
-                    Player Ply = Player.Get(arguments.At(0));
-                    if (Ply == null)
+                    Player ply = Player.Get(arguments.At(0));
+                    if (ply == null)
                     {
                         response = $"Player not found: {arguments.At(0)}";
                         return false;
@@ -69,10 +69,10 @@ namespace AdminTools.Commands.Hp
                     }
 
                     if (val <= 0)
-                        Ply.Kill();
+                        ply.Kill();
                     else
-                        Ply.Health = val;
-                    response = $"Player {Ply.Nickname}'s HP was set to {val}";
+                        ply.Health = val;
+                    response = $"Player {ply.Nickname}'s HP was set to {val}";
                     return true;
             }
         }

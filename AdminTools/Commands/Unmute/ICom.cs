@@ -5,7 +5,7 @@ using System;
 
 namespace AdminTools.Commands.Unmute
 {
-    public class ICom : ICommand
+    public class Com : ICommand
     {
         public string Command { get; } = "icom";
 
@@ -28,8 +28,8 @@ namespace AdminTools.Commands.Unmute
                 return false;
             }
 
-            foreach (Player Ply in Player.List)
-                Ply.IsIntercomMuted = false;
+            foreach (Player ply in Player.List)
+                ply.IsIntercomMuted = false;
 
             response = "Everyone from the server who is not a staff can speak in the intercom now";
             return true;

@@ -1,7 +1,6 @@
 ﻿using CommandSystem;
 using Exiled.API.Features;
 using Exiled.Permissions.Extensions;
-using Grenades;
 using System;
 
 namespace AdminTools.Commands.Explode
@@ -45,13 +44,13 @@ namespace AdminTools.Commands.Explode
                         return false;
                     }
 
-                    foreach (Player Ply in Player.List)
+                    foreach (Player ply in Player.List)
                     {
-                        if (Ply.Role == RoleType.Spectator || Ply.Role == RoleType.None)
+                        if (ply.Role == RoleType.Spectator || ply.Role == RoleType.None)
                             continue;
 
-                        Ply.Kill();
-                        EventHandlers.SpawnGrenadeOnPlayer(Ply, GrenadeType.Frag, 0.1f);
+                        ply.Kill();
+                        EventHandlers.SpawnGrenadeOnPlayer(ply, GrenadeType.Frag, 0.1f);
                     }
                     response = "Everyone exploded, Hubert cannot believe you have done this";
                     return true;
@@ -62,22 +61,22 @@ namespace AdminTools.Commands.Explode
                         return false;
                     }
 
-                    Player Pl = Player.Get(arguments.At(0));
-                    if (Pl == null)
+                    Player pl = Player.Get(arguments.At(0));
+                    if (pl == null)
                     {
                         response = $"Invalid target to explode: {arguments.At(0)}";
                         return false;
                     }
 
-                    if (Pl.Role == RoleType.Spectator || Pl.Role == RoleType.None)
+                    if (pl.Role == RoleType.Spectator || pl.Role == RoleType.None)
                     {
-                        response = $"Player \"{Pl.Nickname}\" is not a valid class to explode";
+                        response = $"Player \"{pl.Nickname}\" is not a valid class to explode";
                         return false;
                     }
 
-                    Pl.Kill();
-                    EventHandlers.SpawnGrenadeOnPlayer(Pl, GrenadeType.Frag, 0.1f);
-                    response = $"Player \"{Pl.Nickname}\" game ended (exploded)";
+                    pl.Kill();
+                    EventHandlers.SpawnGrenadeOnPlayer(pl, GrenadeType.Frag, 0.1f);
+                    response = $"Player \"{pl.Nickname}\" game ended (exploded)";
                     return true;
             }
         }

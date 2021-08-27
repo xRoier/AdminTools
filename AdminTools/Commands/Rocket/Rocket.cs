@@ -45,21 +45,21 @@ namespace AdminTools.Commands.Rocket
                         return false;
                     }
 
-                    foreach (Player Ply in Player.List)
-                        Timing.RunCoroutine(EventHandlers.DoRocket(Ply, speed));
+                    foreach (Player ply in Player.List)
+                        Timing.RunCoroutine(EventHandlers.DoRocket(ply, speed));
 
                     response = "Everyone has been rocketed into the sky (We're going on a trip, in our favorite rocketship)";
                     return true;
                 default:
-                    Player Pl = Player.Get(arguments.At(0));
-                    if (Pl == null)
+                    Player pl = Player.Get(arguments.At(0));
+                    if (pl == null)
                     {
                         response = $"Player not found: {arguments.At(0)}";
                         return false;
                     }
-                    else if (Pl.Role == RoleType.Spectator || Pl.Role == RoleType.None)
+                    else if (pl.Role == RoleType.Spectator || pl.Role == RoleType.None)
                     {
-                        response = $"Player {Pl.Nickname} is not a valid class to rocket";
+                        response = $"Player {pl.Nickname} is not a valid class to rocket";
                         return false;
                     }
 
@@ -69,8 +69,8 @@ namespace AdminTools.Commands.Rocket
                         return false;
                     }
 
-                    Timing.RunCoroutine(EventHandlers.DoRocket(Pl, spd));
-                    response = $"Player {Pl.Nickname} has been rocketed into the sky (We're going on a trip, in our favorite rocketship)";
+                    Timing.RunCoroutine(EventHandlers.DoRocket(pl, spd));
+                    response = $"Player {pl.Nickname} has been rocketed into the sky (We're going on a trip, in our favorite rocketship)";
                     return true;
             }
         }

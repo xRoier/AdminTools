@@ -43,8 +43,8 @@ namespace AdminTools.Commands.Scale
                         response = "Usage: scale reset";
                         return false;
                     }
-                    foreach (Player Plyr in Player.List)
-                        EventHandlers.SetPlayerScale(Plyr.GameObject, 1);
+                    foreach (Player plyr in Player.List)
+                        EventHandlers.SetPlayerScale(plyr.GameObject, 1);
 
                     response = $"Everyone's scale has been reset";
                     return true;
@@ -62,8 +62,8 @@ namespace AdminTools.Commands.Scale
                         return false;
                     }
 
-                    foreach (Player Ply in Player.List)
-                        EventHandlers.SetPlayerScale(Ply.GameObject, value);
+                    foreach (Player ply in Player.List)
+                        EventHandlers.SetPlayerScale(ply.GameObject, value);
 
                     response = $"Everyone's scale has been set to {value}";
                     return true;
@@ -74,8 +74,8 @@ namespace AdminTools.Commands.Scale
                         return false;
                     }
 
-                    Player Pl = Player.Get(arguments.At(0));
-                    if (Pl == null)
+                    Player pl = Player.Get(arguments.At(0));
+                    if (pl == null)
                     {
                         response = $"Player not found: {arguments.At(0)}";
                         return true;
@@ -87,8 +87,8 @@ namespace AdminTools.Commands.Scale
                         return false;
                     }
 
-                    EventHandlers.SetPlayerScale(Pl.GameObject, val);
-                    response = $"Player {Pl.Nickname}'s scale has been set to {val}";
+                    EventHandlers.SetPlayerScale(pl.GameObject, val);
+                    response = $"Player {pl.Nickname}'s scale has been set to {val}";
                     return true;
             }
         }

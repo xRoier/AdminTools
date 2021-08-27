@@ -7,6 +7,8 @@ using UnityEngine;
 
 namespace AdminTools.Commands.DropSize
 {
+    using Exiled.API.Features.Items;
+
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     [CommandHandler(typeof(GameConsoleCommandHandler))]
     public class DropSize : ParentCommand
@@ -46,7 +48,7 @@ namespace AdminTools.Commands.DropSize
                         return false;
                     }
 
-                    if (!Enum.TryParse(arguments.At(1), true, out ItemType Type))
+                    if (!Enum.TryParse(arguments.At(1), true, out ItemType type))
                     {
                         response = $"Invalid value for item name: {arguments.At(1)}";
                         return false;
@@ -60,7 +62,7 @@ namespace AdminTools.Commands.DropSize
                                 response = $"Invalid value for item scale: {arguments.At(2)}";
                                 return false;
                             }
-                            SpawnItem(Type, size, out string msg);
+                            SpawnItem(type, size, out string msg);
                             response = msg;
                             return true;
                         case 5:
@@ -81,7 +83,7 @@ namespace AdminTools.Commands.DropSize
                                 response = $"Invalid value for item scale: {arguments.At(4)}";
                                 return false;
                             }
-                            SpawnItem(Type, xval, yval, zval, out string message);
+                            SpawnItem(type, xval, yval, zval, out string message);
                             response = message;
                             return true;
                         default:
@@ -95,8 +97,8 @@ namespace AdminTools.Commands.DropSize
                         return false;
                     }
 
-                    Player Ply = Player.Get(arguments.At(0));
-                    if (Ply == null)
+                    Player ply = Player.Get(arguments.At(0));
+                    if (ply == null)
                     {
                         response = $"Player not found: {arguments.At(0)}";
                         return true;
@@ -116,7 +118,7 @@ namespace AdminTools.Commands.DropSize
                                 response = $"Invalid value for item scale: {arguments.At(2)}";
                                 return false;
                             }
-                            SpawnItem(Ply, T, size, out string msg);
+                            SpawnItem(ply, T, size, out string msg);
                             response = msg;
                             return true;
                         case 5:
@@ -137,7 +139,7 @@ namespace AdminTools.Commands.DropSize
                                 response = $"Invalid value for item scale: {arguments.At(4)}";
                                 return false;
                             }
-                            SpawnItem(Ply, T, xval, yval, zval, out string message);
+                            SpawnItem(ply, T, xval, yval, zval, out string message);
                             response = message;
                             return true;
                         default:
@@ -147,56 +149,40 @@ namespace AdminTools.Commands.DropSize
             }
         }
 
-        private void SpawnItem(ItemType Type, float size, out string message)
+        private void SpawnItem(ItemType type, float size, out string message)
         {
-            foreach (Player Ply in Player.List)
+            foreach (Player ply in Player.List)
             {
-                if (Ply.Role == RoleType.Spectator || Ply.Role == RoleType.None)
+                if (ply.Role == RoleType.Spectator || ply.Role == RoleType.None)
                     continue;
 
-                Pickup Item = Exiled.API.Extensions.Item.Spawn(Type, 0, Ply.Position);
-                GameObject gameObject = Item.gameObject;
-                gameObject.transform.localScale = Vector3.one * size;
-                NetworkServer.UnSpawn(gameObject);
-                NetworkServer.Spawn(Item.gameObject);
+                new Item(type).Spawn(ply.Position).Scale = Vector3.one * size;
             }
-            message = $"Spawned in a {Type.ToString()} that is a size of {size} at every player's position (\"Yay! Items with sizes!\" - Galaxy119)";
+            message = $"Spawned in a {type.ToString()} that is a size of {size} at every player's position (\"Yay! Items with sizes!\" - Galaxy119)";
         }
 
-        private void SpawnItem(ItemType Type, float x, float y, float z, out string message)
+        private void SpawnItem(ItemType type, float x, float y, float z, out string message)
         {
-            foreach (Player Ply in Player.List)
+            foreach (Player ply in Player.List)
             {
-                if (Ply.Role == RoleType.Spectator || Ply.Role == RoleType.None)
+                if (ply.Role == RoleType.Spectator || ply.Role == RoleType.None)
                     continue;
 
-                Pickup Item = Exiled.API.Extensions.Item.Spawn(Type, 0, Ply.Position);
-                GameObject gameObject = Item.gameObject;
-                gameObject.transform.localScale = new Vector3(x, y, z);
-                NetworkServer.UnSpawn(gameObject);
-                NetworkServer.Spawn(Item.gameObject);
+                new Item(type).Spawn(ply.Position).Scale = new Vector3(x, y, z);
             }
-            message = $"Spawned in a {Type.ToString()} that is {x}x{y}x{z} at every player's position (\"Yay! Items with sizes!\" - Galaxy119)";
+            message = $"Spawned in a {type.ToString()} that is {x}x{y}x{z} at every player's position (\"Yay! Items with sizes!\" - Galaxy119)";
         }
 
-        private void SpawnItem(Player Ply, ItemType Type, float size, out string message)
+        private void SpawnItem(Player ply, ItemType type, float size, out string message)
         {
-            Pickup Item = Exiled.API.Extensions.Item.Spawn(Type, 0, Ply.Position);
-            GameObject gameObject = Item.gameObject;
-            gameObject.transform.localScale = Vector3.one * size;
-            NetworkServer.UnSpawn(gameObject);
-            NetworkServer.Spawn(Item.gameObject);
-            message = $"Spawned in a {Type.ToString()} that is a size of {size} at {Ply.Nickname}'s position (\"Yay! Items with sizes!\" - Galaxy119)";
+            new Item(type).Spawn(ply.Position).Scale = Vector3.one * size;
+            message = $"Spawned in a {type.ToString()} that is a size of {size} at {ply.Nickname}'s position (\"Yay! Items with sizes!\" - Galaxy119)";
         }
 
-        private void SpawnItem(Player Ply, ItemType Type, float x, float y, float z, out string message)
+        private void SpawnItem(Player ply, ItemType type, float x, float y, float z, out string message)
         {
-            Pickup Item = Exiled.API.Extensions.Item.Spawn(Type, 0, Ply.Position);
-            GameObject gameObject = Item.gameObject;
-            gameObject.transform.localScale = new Vector3(x, y, z);
-            NetworkServer.UnSpawn(gameObject);
-            NetworkServer.Spawn(Item.gameObject);
-            message = $"Spawned in a {Type.ToString()} that is {x}x{y}x{z} at {Ply.Nickname}'s position (\"Yay! Items with sizes!\" - Galaxy119)";
+            new Item(type).Spawn(ply.Position).Scale = new Vector3(x, y, z);
+            message = $"Spawned in a {type.ToString()} that is {x}x{y}x{z} at {ply.Nickname}'s position (\"Yay! Items with sizes!\" - Galaxy119)";
         }
     }
 }

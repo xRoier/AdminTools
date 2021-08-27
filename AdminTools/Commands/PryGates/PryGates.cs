@@ -58,21 +58,21 @@ namespace AdminTools.Commands.PryGates
                         return false;
                     }
 
-                    StringBuilder PlayerLister = StringBuilderPool.Shared.Rent(Plugin.PryGateHubs.Count != 0 ? "Players with the ability to pry gates:\n" : "No players currently online have the ability to pry gates");
+                    StringBuilder playerLister = StringBuilderPool.Shared.Rent(Plugin.PryGateHubs.Count != 0 ? "Players with the ability to pry gates:\n" : "No players currently online have the ability to pry gates");
                     if (Plugin.PryGateHubs.Count > 0)
                     {
-                        foreach (Player Ply in Plugin.PryGateHubs)
-                            PlayerLister.Append(Ply.Nickname + ", ");
+                        foreach (Player ply in Plugin.PryGateHubs)
+                            playerLister.Append(ply.Nickname + ", ");
 
-                        int length = PlayerLister.ToString().Length;
-                        response = PlayerLister.ToString().Substring(0, length - 2);
-                        StringBuilderPool.Shared.Return(PlayerLister);
+                        int length = playerLister.ToString().Length;
+                        response = playerLister.ToString().Substring(0, length - 2);
+                        StringBuilderPool.Shared.Return(playerLister);
                         return true;
                     }
                     else
                     {
-                        response = PlayerLister.ToString();
-                        StringBuilderPool.Shared.Return(PlayerLister);
+                        response = playerLister.ToString();
+                        StringBuilderPool.Shared.Return(playerLister);
                         return true;
                     }
                 case "remove":
@@ -82,20 +82,20 @@ namespace AdminTools.Commands.PryGates
                         return false;
                     }
 
-                    Player Plyr = Player.Get(arguments.At(1));
-                    if (Plyr == null)
+                    Player plyr = Player.Get(arguments.At(1));
+                    if (plyr == null)
                     {
                         response = $"Player not found: {arguments.At(1)}";
                         return false;
                     }
 
-                    if (Plugin.PryGateHubs.Contains(Plyr))
+                    if (Plugin.PryGateHubs.Contains(plyr))
                     {
-                        Plugin.PryGateHubs.Remove(Plyr);
-                        response = $"Player \"{Plyr.Nickname}\" cannot pry gates open now";
+                        Plugin.PryGateHubs.Remove(plyr);
+                        response = $"Player \"{plyr.Nickname}\" cannot pry gates open now";
                     }
                     else
-                        response = $"Player {Plyr.Nickname} does not have the ability to pry gates open";
+                        response = $"Player {plyr.Nickname} does not have the ability to pry gates open";
                     return true;
                 case "*":
                 case "all":
@@ -105,10 +105,10 @@ namespace AdminTools.Commands.PryGates
                         return false;
                     }
 
-                    foreach (Player Ply in Player.List)
+                    foreach (Player ply in Player.List)
                     {
-                        if (!Plugin.PryGateHubs.Contains(Ply))
-                            Plugin.PryGateHubs.Add(Ply);
+                        if (!Plugin.PryGateHubs.Contains(ply))
+                            Plugin.PryGateHubs.Add(ply);
                     }
 
                     response = "The ability to pry gates open is on for all players now";
@@ -120,23 +120,23 @@ namespace AdminTools.Commands.PryGates
                         return false;
                     }
 
-                    Player Pl = Player.Get(arguments.At(0));
-                    if (Pl == null)
+                    Player pl = Player.Get(arguments.At(0));
+                    if (pl == null)
                     {
                         response = $"Player \"{arguments.At(0)}\" not found";
                         return false;
                     }
 
-                    if (!Plugin.PryGateHubs.Contains(Pl))
+                    if (!Plugin.PryGateHubs.Contains(pl))
                     {
-                        Plugin.PryGateHubs.Add(Pl);
-                        response = $"Player \"{Pl.Nickname}\" can now pry gates open";
+                        Plugin.PryGateHubs.Add(pl);
+                        response = $"Player \"{pl.Nickname}\" can now pry gates open";
                         return true;
                     }
                     else
                     {
-                        Plugin.PryGateHubs.Remove(Pl);
-                        response = $"Player \"{Pl.Nickname}\" cannot pry gates open now";
+                        Plugin.PryGateHubs.Remove(pl);
+                        response = $"Player \"{pl.Nickname}\" cannot pry gates open now";
                         return true;
                     }
             }

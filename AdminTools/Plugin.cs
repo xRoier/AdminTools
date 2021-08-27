@@ -54,7 +54,6 @@ namespace AdminTools
 				HiddenTagsFilePath = hiddenTagFileName;
 
 				EventHandlers = new EventHandlers(this);
-				Handlers.Server.SendingRemoteAdminCommand += EventHandlers.OnCommand;
 				Handlers.Player.Verified += EventHandlers.OnPlayerVerified;
 				Handlers.Server.RoundEnded += EventHandlers.OnRoundEnd;
 				Handlers.Player.TriggeringTesla += EventHandlers.OnTriggerTesla;
@@ -73,7 +72,6 @@ namespace AdminTools
 		public override void OnDisabled()
 		{
 			Handlers.Player.InteractingDoor -= EventHandlers.OnDoorOpen;
-			Handlers.Server.SendingRemoteAdminCommand -= EventHandlers.OnCommand;
 			Handlers.Player.Verified -= EventHandlers.OnPlayerVerified;
 			Handlers.Server.RoundEnded -= EventHandlers.OnRoundEnd;
 			Handlers.Player.TriggeringTesla -= EventHandlers.OnTriggerTesla;

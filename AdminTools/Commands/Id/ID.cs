@@ -35,33 +35,33 @@ namespace AdminTools.Commands.Id
             {
                 case "*":
                 case "all":
-                    StringBuilder Builder = StringBuilderPool.Shared.Rent();
+                    StringBuilder builder = StringBuilderPool.Shared.Rent();
                     if (Player.List.Count() == 0)
                     {
-                        Builder.AppendLine("There are no players currently online in the server");
-                        string msg = Builder.ToString();
-                        StringBuilderPool.Shared.Return(Builder);
+                        builder.AppendLine("There are no players currently online in the server");
+                        string msg = builder.ToString();
+                        StringBuilderPool.Shared.Return(builder);
                         response = msg;
                         return true;
                     }
                     else
                     {
-                        Builder.AppendLine("List of ID's on the server:");
-                        foreach (Player Ply in Player.List)
+                        builder.AppendLine("List of ID's on the server:");
+                        foreach (Player ply in Player.List)
                         {
-                            Builder.Append(Ply.Nickname);
-                            Builder.Append(" - ");
-                            Builder.Append(Ply.UserId);
-                            Builder.Append(" - ");
-                            Builder.AppendLine(Ply.Id.ToString());
+                            builder.Append(ply.Nickname);
+                            builder.Append(" - ");
+                            builder.Append(ply.UserId);
+                            builder.Append(" - ");
+                            builder.AppendLine(ply.Id.ToString());
                         }
-                        string msg = Builder.ToString();
-                        StringBuilderPool.Shared.Return(Builder);
+                        string msg = builder.ToString();
+                        StringBuilderPool.Shared.Return(builder);
                         response = msg;
                         return true;
                     }
                 default:
-                    Player Pl;
+                    Player pl;
                     if (String.IsNullOrWhiteSpace(arguments.At(0)))
                     {
                         if (!(sender is PlayerCommandSender plysend))
@@ -70,19 +70,19 @@ namespace AdminTools.Commands.Id
                             return false;
                         }
 
-                        Pl = Player.Get(plysend.ReferenceHub);
+                        pl = Player.Get(plysend.ReferenceHub);
                     }
                     else
                     {
-                        Pl = Player.Get(arguments.At(0));
-                        if (Pl == null)
+                        pl = Player.Get(arguments.At(0));
+                        if (pl == null)
                         {
                             response = "Player not found";
                             return false;
                         }
                     }
 
-                    response = $"{Pl.Nickname} - {Pl.UserId} - {Pl.Id}";
+                    response = $"{pl.Nickname} - {pl.UserId} - {pl.Id}";
                     return true;
             }
         }

@@ -5,7 +5,7 @@ using System;
 
 namespace AdminTools.Commands.Mute
 {
-    public class ICom : ICommand
+    public class Com : ICommand
     {
         public string Command { get; } = "icom";
 

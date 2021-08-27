@@ -39,55 +39,55 @@ namespace AdminTools.Commands.SpawnRagdoll
             {
                 case "*":
                 case "all":
-                    if (!Enum.TryParse(arguments.At(0), true, out RoleType Role))
+                    if (!Enum.TryParse(arguments.At(0), true, out RoleType role))
                     {
                         response = $"Invalid value for role type: {arguments.At(0)}";
                         return false;
                     }
 
-                    if (!uint.TryParse(arguments.At(1), out uint Amount))
+                    if (!uint.TryParse(arguments.At(1), out uint amount))
                     {
                         response = $"Invalid value for ragdoll amount: {arguments.At(1)}";
                         return false;
                     }
 
-                    foreach (Player Ply in Player.List)
+                    foreach (Player ply in Player.List)
                     {
-                        if (Ply.Role == RoleType.Spectator || Ply.Role == RoleType.None)
+                        if (ply.Role == RoleType.Spectator || ply.Role == RoleType.None)
                             continue;
 
-                        Timing.RunCoroutine(EventHandlers.SpawnBodies(Ply, Role, (int)Amount));
+                        Timing.RunCoroutine(EventHandlers.SpawnBodies(ply, role, (int)amount));
                     }
 
-                    response = $"{Amount} {Role.ToString()} ragdolls have spawned on everyone";
+                    response = $"{amount} {role.ToString()} ragdolls have spawned on everyone";
                     return true;
                 default:
-                    Player Pl = Player.Get(arguments.At(0));
-                    if (Pl == null)
+                    Player pl = Player.Get(arguments.At(0));
+                    if (pl == null)
                     {
                         response = $"Player not found: {arguments.At(0)}";
                         return false;
                     }
-                    else if (Pl.Role == RoleType.Spectator || Pl.Role == RoleType.None)
+                    else if (pl.Role == RoleType.Spectator || pl.Role == RoleType.None)
                     {
                         response = $"This player is not a valid class to spawn a ragdoll on";
                         return false;
                     }
 
-                    if (!Enum.TryParse(arguments.At(1), true, out RoleType R))
+                    if (!Enum.TryParse(arguments.At(1), true, out RoleType r))
                     {
                         response = $"Invalid value for role type: {arguments.At(1)}";
                         return false;
                     }
 
-                    if (!uint.TryParse(arguments.At(2), out uint Count))
+                    if (!uint.TryParse(arguments.At(2), out uint count))
                     {
                         response = $"Invalid value for ragdoll amount: {arguments.At(2)}";
                         return false;
                     }
 
-                    Timing.RunCoroutine(EventHandlers.SpawnBodies(Pl, R, (int)Count));
-                    response = $"{Count} {R.ToString()} ragdolls have spawned on Player {Pl.Nickname}";
+                    Timing.RunCoroutine(EventHandlers.SpawnBodies(pl, r, (int)count));
+                    response = $"{count} {r.ToString()} ragdolls have spawned on Player {pl.Nickname}";
                     return true;
             }
         }

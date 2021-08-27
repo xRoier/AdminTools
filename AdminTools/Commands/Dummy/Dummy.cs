@@ -24,7 +24,6 @@ namespace AdminTools.Commands.Dummy
 
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            EventHandlers.LogCommandUsed((CommandSender)sender, EventHandlers.FormatArguments(arguments, 0));
             if (!((CommandSender)sender).CheckPermission("at.dummy"))
             {
                 response = "You do not have permission to use this command";
@@ -37,7 +36,7 @@ namespace AdminTools.Commands.Dummy
                 return false;
             }
 
-            Player Sender = Player.Get(plysend.ReferenceHub);
+            Player player = Player.Get(plysend.ReferenceHub);
             if (arguments.Count < 1)
             {
                 response = "Usage:\ndummy ((player id / name) or (all / *)) (RoleType) (x value) (y value) (z value)" +
@@ -56,60 +55,60 @@ namespace AdminTools.Commands.Dummy
                         return false;
                     }
 
-                    Player Ply = Player.Get(arguments.At(1));
-                    if (Ply == null)
+                    Player ply = Player.Get(arguments.At(1));
+                    if (ply == null)
                     {
                         response = $"Player not found: {arguments.At(1)}";
                         return false;
                     }
 
-                    if (!int.TryParse(arguments.At(2), out int Min) && Min < 0)
+                    if (!int.TryParse(arguments.At(2), out int min) && min < 0)
                     {
                         response = $"Invalid value for minimum index: {arguments.At(2)}";
                         return false;
                     }
 
-                    if (!int.TryParse(arguments.At(3), out int Max) && Max < 0)
+                    if (!int.TryParse(arguments.At(3), out int max) && max < 0)
                     {
                         response = $"Invalid value for maximum index: {arguments.At(3)}";
                         return false;
                     }
 
-                    if (Max < Min)
+                    if (max < min)
                     {
-                        response = $"{Max} is not greater than {Min}";
+                        response = $"{max} is not greater than {min}";
                         return false;
                     }
 
-                    if (!Plugin.DumHubs.TryGetValue(Ply, out List<GameObject> objs))
+                    if (!Plugin.DumHubs.TryGetValue(ply, out List<GameObject> objs))
                     {
-                        response = $"{Ply.Nickname} has not spawned in any dummies in";
+                        response = $"{ply.Nickname} has not spawned in any dummies in";
                         return false;
                     }
 
-                    if (Min > objs.Count)
+                    if (min > objs.Count)
                     {
-                        response = $"{Min} (minimum) is higher than the number of dummies {Ply.Nickname} spawned! (Which is {objs.Count})";
+                        response = $"{min} (minimum) is higher than the number of dummies {ply.Nickname} spawned! (Which is {objs.Count})";
                         return false;
                     }
 
-                    if (Max > objs.Count)
+                    if (max > objs.Count)
                     {
-                        response = $"{Max} (maximum) is higher than the number of dummies {Ply.Nickname} spawned! (Which is {objs.Count})";
+                        response = $"{max} (maximum) is higher than the number of dummies {ply.Nickname} spawned! (Which is {objs.Count})";
                         return false;
                     }
 
-                    Min = Min == 0 ? 0 : Min - 1;
-                    Max = Max == 0 ? 0 : Max - 1;
+                    min = min == 0 ? 0 : min - 1;
+                    max = max == 0 ? 0 : max - 1;
 
-                    for (int i = Min; i <= Max; i++)
+                    for (int i = min; i <= max; i++)
                     {
                         UnityEngine.Object.Destroy(objs.ElementAt(i));
                         objs[i] = null;
                     }
                     objs.RemoveAll(r => r == null);
 
-                    response = $"All dummies from {Min + 1} to {Max + 1} have been cleared from Player {Ply.Nickname}";
+                    response = $"All dummies from {min + 1} to {max + 1} have been cleared from Player {ply.Nickname}";
                     return true;
                 case "clearall":
                     if (arguments.Count != 1)
@@ -118,11 +117,11 @@ namespace AdminTools.Commands.Dummy
                         return false;
                     }
 
-                    foreach (KeyValuePair<Player, List<GameObject>> Dummy in Plugin.DumHubs)
+                    foreach (KeyValuePair<Player, List<GameObject>> dummy in Plugin.DumHubs)
                     {
-                        foreach (GameObject Dum in Dummy.Value)
-                            UnityEngine.Object.Destroy(Dum);
-                        Dummy.Value.Clear();
+                        foreach (GameObject dum in dummy.Value)
+                            UnityEngine.Object.Destroy(dum);
+                        dummy.Value.Clear();
                     }
 
                     Plugin.DumHubs.Clear();
@@ -135,20 +134,20 @@ namespace AdminTools.Commands.Dummy
                         return false;
                     }
 
-                    Player Plyr = Player.Get(arguments.At(1));
-                    if (Plyr == null)
+                    Player plyr = Player.Get(arguments.At(1));
+                    if (plyr == null)
                     {
                         response = $"Player not found: {arguments.At(1)}";
                         return false;
                     }
 
-                    if (!Plugin.DumHubs.TryGetValue(Plyr, out List<GameObject> obj) || obj.Count == 0)
+                    if (!Plugin.DumHubs.TryGetValue(plyr, out List<GameObject> obj) || obj.Count == 0)
                     {
-                        response = $"{Plyr.Nickname} has not spawned in any dummies in";
+                        response = $"{plyr.Nickname} has not spawned in any dummies in";
                         return false;
                     }
 
-                    response = $"{Plyr.Nickname} has spawned in {(obj.Count != 1 ? $"{obj.Count} dummies" : $"{obj.Count} dummy")}";
+                    response = $"{plyr.Nickname} has spawned in {(obj.Count != 1 ? $"{obj.Count} dummies" : $"{obj.Count} dummy")}";
                     return true;
                 case "*":
                 case "all":
@@ -158,7 +157,7 @@ namespace AdminTools.Commands.Dummy
                         return false;
                     }
 
-                    if (!Enum.TryParse(arguments.At(1), true, out RoleType Role))
+                    if (!Enum.TryParse(arguments.At(1), true, out RoleType role))
                     {
                         response = $"Invalid value for role type: {arguments.At(1)}";
                         return false;
@@ -181,17 +180,17 @@ namespace AdminTools.Commands.Dummy
                         response = $"Invalid z value for dummy size: {arguments.At(4)}";
                         return false;
                     }
-                    int Index = 0;
-                    foreach (Player P in Player.List)
+                    int index = 0;
+                    foreach (Player p in Player.List)
                     {
-                        if (P.Role == RoleType.Spectator || P.Role == RoleType.None)
+                        if (p.Role == RoleType.Spectator || p.Role == RoleType.None)
                             continue;
 
-                        EventHandlers.SpawnDummyModel(Sender, P.Position, P.GameObject.transform.localRotation, Role, xval, yval, zval, out int DIndex);
-                        Index = DIndex;
+                        EventHandlers.SpawnDummyModel(player, p.Position, p.GameObject.transform.localRotation, role, xval, yval, zval, out int dIndex);
+                        index = dIndex;
                     }
 
-                    response = $"A {Role.ToString()} dummy has spawned on everyone, you now spawned in a total of {(Index != 1 ? $"{Index} dummies" : $"{Index} dummies")}";
+                    response = $"A {role.ToString()} dummy has spawned on everyone, you now spawned in a total of {(index != 1 ? $"{index} dummies" : $"{index} dummies")}";
                     return true;
                 default:
                     if (arguments.Count != 5)
@@ -200,19 +199,19 @@ namespace AdminTools.Commands.Dummy
                         return false;
                     }
 
-                    Player Pl = Player.Get(arguments.At(0));
-                    if (Pl == null)
+                    Player pl = Player.Get(arguments.At(0));
+                    if (pl == null)
                     {
                         response = $"Player not found: {arguments.At(0)}";
                         return false;
                     }
-                    else if (Pl.Role == RoleType.Spectator || Pl.Role == RoleType.None)
+                    else if (pl.Role == RoleType.Spectator || pl.Role == RoleType.None)
                     {
                         response = $"This player is not a valid class to spawn a dummy on";
                         return false;
                     }
 
-                    if (!Enum.TryParse(arguments.At(1), true, out RoleType R))
+                    if (!Enum.TryParse(arguments.At(1), true, out RoleType r2))
                     {
                         response = $"Invalid value for role type: {arguments.At(1)}";
                         return false;
@@ -236,8 +235,8 @@ namespace AdminTools.Commands.Dummy
                         return false;
                     }
 
-                    EventHandlers.SpawnDummyModel(Sender, Pl.Position, Pl.GameObject.transform.localRotation, R, x, y, z, out int DummyIndex);
-                    response = $"A {R.ToString()} dummy has spawned on Player {Pl.Nickname}, you now spawned in a total of {(DummyIndex != 1 ? $"{DummyIndex} dummies" : $"{DummyIndex} dummy")}";
+                    EventHandlers.SpawnDummyModel(player, pl.Position, pl.GameObject.transform.localRotation, r2, x, y, z, out int dummyIndex);
+                    response = $"A {r2.ToString()} dummy has spawned on Player {pl.Nickname}, you now spawned in a total of {(dummyIndex != 1 ? $"{dummyIndex} dummies" : $"{dummyIndex} dummy")}";
                     return true;
             }
         }

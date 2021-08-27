@@ -48,9 +48,9 @@ namespace AdminTools.Commands.BreakDoors
                         return false;
                     }
 
-                    foreach (Player Ply in Plugin.BdHubs.Keys)
-                        if (Ply.ReferenceHub.TryGetComponent(out BreakDoorComponent BdCom))
-                            UnityEngine.Object.Destroy(BdCom);
+                    foreach (Player ply in Plugin.BdHubs.Keys)
+                        if (ply.ReferenceHub.TryGetComponent(out BreakDoorComponent bdCom))
+                            UnityEngine.Object.Destroy(bdCom);
 
                     response = "Breaking doors has been removed from everyone";
                     return true;
@@ -61,21 +61,21 @@ namespace AdminTools.Commands.BreakDoors
                         return false;
                     }
 
-                    StringBuilder PlayerLister = StringBuilderPool.Shared.Rent(Plugin.BdHubs.Count != 0 ? "Players with break doors on:\n" : "No players currently online have breaking doors on");
+                    StringBuilder playerLister = StringBuilderPool.Shared.Rent(Plugin.BdHubs.Count != 0 ? "Players with break doors on:\n" : "No players currently online have breaking doors on");
                     if (Plugin.BdHubs.Count == 0)
                     {
-                        response = PlayerLister.ToString();
+                        response = playerLister.ToString();
                         return true;
                     }
 
-                    foreach (Player Ply in Plugin.BdHubs.Keys)
+                    foreach (Player ply in Plugin.BdHubs.Keys)
                     {
-                        PlayerLister.Append(Ply.Nickname);
-                        PlayerLister.Append(", ");
+                        playerLister.Append(ply.Nickname);
+                        playerLister.Append(", ");
                     }
 
-                    string msg = PlayerLister.ToString().Substring(0, PlayerLister.ToString().Length - 2);
-                    StringBuilderPool.Shared.Return(PlayerLister);
+                    string msg = playerLister.ToString().Substring(0, playerLister.ToString().Length - 2);
+                    StringBuilderPool.Shared.Return(playerLister);
                     response = msg;
                     return true;
                 case "remove":
@@ -85,21 +85,21 @@ namespace AdminTools.Commands.BreakDoors
                         return false;
                     }
 
-                    Player Pl = Player.Get(arguments.At(1));
-                    if (Pl == null)
+                    Player pl = Player.Get(arguments.At(1));
+                    if (pl == null)
                     {
                         response = $"Player not found: {arguments.At(1)}";
                         return false;
                     }
 
-                    if (Pl.ReferenceHub.TryGetComponent(out BreakDoorComponent BdComponent))
+                    if (pl.ReferenceHub.TryGetComponent(out BreakDoorComponent bdComponent))
                     {
-                        Plugin.BdHubs.Remove(Pl);
-                        UnityEngine.Object.Destroy(BdComponent);
-                        response = $"Breaking doors is off for {Pl.Nickname}";
+                        Plugin.BdHubs.Remove(pl);
+                        UnityEngine.Object.Destroy(bdComponent);
+                        response = $"Breaking doors is off for {pl.Nickname}";
                     }
                     else
-                        response = $"Player {Pl.Nickname} does not have the ability to break doors";
+                        response = $"Player {pl.Nickname} does not have the ability to break doors";
                     return true;
                 case "*":
                 case "all":
@@ -109,46 +109,46 @@ namespace AdminTools.Commands.BreakDoors
                         return false;
                     }
 
-                    if (!Enum.TryParse(arguments.At(1), true, out BreakType Type))
+                    if (!Enum.TryParse(arguments.At(1), true, out BreakType type))
                     {
                         response = $"Invalid breaking type: {arguments.At(1)}";
                         return false;
                     }
 
-                    foreach (Player Ply in Player.List)
+                    foreach (Player ply in Player.List)
                     {
-                        if (!Ply.ReferenceHub.TryGetComponent(out BreakDoorComponent BdCom))
+                        if (!ply.ReferenceHub.TryGetComponent(out BreakDoorComponent bdCom))
                         {
-                            Ply.GameObject.AddComponent<BreakDoorComponent>();
-                            switch (Type)
+                            ply.GameObject.AddComponent<BreakDoorComponent>();
+                            switch (type)
                             {
                                 case BreakType.Doors:
-                                    Ply.ReferenceHub.GetComponent<BreakDoorComponent>().breakAll = false;
-                                    Ply.IsBypassModeEnabled = false;
+                                    ply.ReferenceHub.GetComponent<BreakDoorComponent>().breakAll = false;
+                                    ply.IsBypassModeEnabled = false;
                                     break;
                                 case BreakType.All:
-                                    Ply.ReferenceHub.GetComponent<BreakDoorComponent>().breakAll = true;
-                                    Ply.IsBypassModeEnabled = true;
+                                    ply.ReferenceHub.GetComponent<BreakDoorComponent>().breakAll = true;
+                                    ply.IsBypassModeEnabled = true;
                                     break;
                             }
                         }
                         else
                         {
-                            switch (Type)
+                            switch (type)
                             {
                                 case BreakType.Doors:
-                                    BdCom.breakAll = false;
-                                    Ply.IsBypassModeEnabled = false;
+                                    bdCom.breakAll = false;
+                                    ply.IsBypassModeEnabled = false;
                                     break;
                                 case BreakType.All:
-                                    BdCom.breakAll = true;
-                                    Ply.IsBypassModeEnabled = true;
+                                    bdCom.breakAll = true;
+                                    ply.IsBypassModeEnabled = true;
                                     break;
                             }
                         }
                     }
 
-                    response = $"Breaking {((Type == BreakType.Doors) ? "doors" : "everything")} is on for everyone now";
+                    response = $"Breaking {((type == BreakType.Doors) ? "doors" : "everything")} is on for everyone now";
                     return true;
                 default:
                     if (arguments.Count != 2)
@@ -157,8 +157,8 @@ namespace AdminTools.Commands.BreakDoors
                         return false;
                     }
 
-                    Player Plyr = Player.Get(arguments.At(0));
-                    if (Plyr == null)
+                    Player plyr = Player.Get(arguments.At(0));
+                    if (plyr == null)
                     {
                         response = $"Player not found: {arguments.At(0)}";
                         return false;
@@ -170,38 +170,38 @@ namespace AdminTools.Commands.BreakDoors
                         return false;
                     }
 
-                    if (!Plyr.ReferenceHub.TryGetComponent(out BreakDoorComponent BdComp))
+                    if (!plyr.ReferenceHub.TryGetComponent(out BreakDoorComponent bdComp))
                     {
-                        Plyr.GameObject.AddComponent<BreakDoorComponent>();
+                        plyr.GameObject.AddComponent<BreakDoorComponent>();
                         switch (T)
                         {
                             case BreakType.Doors:
-                                Plyr.ReferenceHub.GetComponent<BreakDoorComponent>().breakAll = false;
-                                Plyr.IsBypassModeEnabled = false;
+                                plyr.ReferenceHub.GetComponent<BreakDoorComponent>().breakAll = false;
+                                plyr.IsBypassModeEnabled = false;
                                 break;
                             case BreakType.All:
-                                Plyr.ReferenceHub.GetComponent<BreakDoorComponent>().breakAll = true;
-                                Plyr.IsBypassModeEnabled = true;
+                                plyr.ReferenceHub.GetComponent<BreakDoorComponent>().breakAll = true;
+                                plyr.IsBypassModeEnabled = true;
                                 break;
                         }
 
-                        response = $"Breaking {((T == BreakType.Doors) ? "doors" : "all")} is on for {Plyr.Nickname}";
+                        response = $"Breaking {((T == BreakType.Doors) ? "doors" : "all")} is on for {plyr.Nickname}";
                     }
                     else
                     {
                         switch (T)
                         {
                             case BreakType.Doors:
-                                BdComp.breakAll = false;
-                                Plyr.IsBypassModeEnabled = false;
+                                bdComp.breakAll = false;
+                                plyr.IsBypassModeEnabled = false;
                                 break;
                             case BreakType.All:
-                                BdComp.breakAll = true;
-                                Plyr.IsBypassModeEnabled = true;
+                                bdComp.breakAll = true;
+                                plyr.IsBypassModeEnabled = true;
                                 break;
                         }
 
-                        response = $"Breaking {((T == BreakType.Doors) ? "doors" : "all")} is on for {Plyr.Nickname}";
+                        response = $"Breaking {((T == BreakType.Doors) ? "doors" : "all")} is on for {plyr.Nickname}";
                     }
                     return true;
             }

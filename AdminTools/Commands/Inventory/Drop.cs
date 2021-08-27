@@ -38,21 +38,21 @@ namespace AdminTools.Commands.Inventory
             {
                 case "*":
                 case "all":
-                    foreach (Player Ply in Player.List)
-                        Ply.Inventory.ServerDropAll();
+                    foreach (Player ply in Player.List)
+                        ply.DropItems();
 
                     response = "All items from everyones inventories has been dropped";
                     return true;
                 default:
-                    Player Pl = Player.Get(arguments.At(0));
-                    if (Pl == null)
+                    Player pl = Player.Get(arguments.At(0));
+                    if (pl == null)
                     {
                         response = $"Player not found: {arguments.At(0)}";
                         return false;
                     }
 
-                    Pl.Inventory.ServerDropAll();
-                    response = $"All items from {Pl.Nickname}'s inventory has been dropped";
+                    pl.DropItems();
+                    response = $"All items from {pl.Nickname}'s inventory has been dropped";
                     return true;
             }
         }

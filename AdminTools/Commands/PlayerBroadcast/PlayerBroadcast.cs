@@ -34,8 +34,8 @@ namespace AdminTools.Commands.PlayerBroadcast
                 return false;
             }
 
-            Player Ply = Player.Get(arguments.At(0));
-            if (Ply == null)
+            Player ply = Player.Get(arguments.At(0));
+            if (ply == null)
             {
                 response = $"Player not found: {arguments.At(0)}";
                 return false;
@@ -47,8 +47,8 @@ namespace AdminTools.Commands.PlayerBroadcast
                 return false;
             }
 
-            Ply.Broadcast(time, EventHandlers.FormatArguments(arguments, 2));
-            response = $"Message sent to {Ply.Nickname}";
+            ply.Broadcast(time, EventHandlers.FormatArguments(arguments, 2));
+            response = $"Message sent to {ply.Nickname}";
             return true;
         }
     }

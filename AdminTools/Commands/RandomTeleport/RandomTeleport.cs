@@ -40,26 +40,26 @@ namespace AdminTools.Commands.RandomTeleport
             {
                 case "*":
                 case "all":
-                    foreach (Player Ply in Player.List)
+                    foreach (Player ply in Player.List)
                     {
-                        Room RandRoom = Map.Rooms[Plugin.NumGen.Next(0, Map.Rooms.Count())];
-                        Ply.Position = RandRoom.Position + Vector3.up;
+                        Room randRoom = Map.Rooms[Plugin.NumGen.Next(0, Map.Rooms.Count())];
+                        ply.Position = randRoom.Position + Vector3.up;
                     }
 
                     response = $"Everyone was teleported to a random room in the facility";
                     return true;
                 default:
-                    Player Pl = Player.Get(arguments.At(0));
-                    if (Pl == null)
+                    Player pl = Player.Get(arguments.At(0));
+                    if (pl == null)
                     {
                         response = $"Player not found: {arguments.At(0)}";
                         return false;
                     }
 
-                    Room Rand = Map.Rooms[Plugin.NumGen.Next(0, Map.Rooms.Count())];
-                    Pl.Position = Rand.Position + Vector3.up;
+                    Room rand = Map.Rooms[Plugin.NumGen.Next(0, Map.Rooms.Count())];
+                    pl.Position = rand.Position + Vector3.up;
 
-                    response = $"Player {Pl.Nickname} was teleported to {Rand.Name}";
+                    response = $"Player {pl.Nickname} was teleported to {rand.Name}";
                     return true;
             }
         }

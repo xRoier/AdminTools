@@ -38,31 +38,31 @@ namespace AdminTools.Commands.Kill
             {
                 case "*":
                 case "all":
-                    foreach (Player Ply in Player.List)
+                    foreach (Player ply in Player.List)
                     {
-                        if (Ply.Role == RoleType.Spectator || Ply.Role == RoleType.None)
+                        if (ply.Role == RoleType.Spectator || ply.Role == RoleType.None)
                             continue;
 
-                        Ply.Kill();
+                        ply.Kill();
                     }
 
                     response = "Everyone has been game ended (killed) now";
                     return true;
                 default:
-                    Player Pl = Player.Get(arguments.At(0));
-                    if (Pl == null)
+                    Player pl = Player.Get(arguments.At(0));
+                    if (pl == null)
                     {
                         response = $"Player not found: {arguments.At(0)}";
                         return false;
                     }
-                    else if (Pl.Role == RoleType.Spectator || Pl.Role == RoleType.None)
+                    else if (pl.Role == RoleType.Spectator || pl.Role == RoleType.None)
                     {
-                        response = $"Player {Pl.Nickname} is not a valid class to kill";
+                        response = $"Player {pl.Nickname} is not a valid class to kill";
                         return false;
                     }
 
-                    Pl.Kill();
-                    response = $"Player {Pl.Nickname} has been game ended (killed) now";
+                    pl.Kill();
+                    response = $"Player {pl.Nickname} has been game ended (killed) now";
                     return true;
             }
         }

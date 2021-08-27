@@ -34,14 +34,14 @@ namespace AdminTools.Commands.Kick
                 return false;
             }
 
-            GameObject Ply = Exiled.API.Features.Player.Get(arguments.At(0)).GameObject;
-            if (Ply == null)
+            GameObject ply = Exiled.API.Features.Player.Get(arguments.At(0)).GameObject;
+            if (ply == null)
             {
                 response = $"Player not found: {arguments.At(0)}";
                 return false;
             }
 
-            ServerConsole.Disconnect(Ply, EventHandlers.FormatArguments(arguments, 1));
+            ServerConsole.Disconnect(ply, EventHandlers.FormatArguments(arguments, 1));
             response = $"Player {Exiled.API.Features.Player.Get(arguments.At(0)).Nickname} has been kicked for \"{EventHandlers.FormatArguments(arguments, 1)}\"";
             return true;
         }

@@ -38,21 +38,21 @@ namespace AdminTools.Commands.Strip
             {
                 case "*":
                 case "all":
-                    foreach (Player Ply in Player.List)
-                        Ply.ClearInventory();
+                    foreach (Player ply in Player.List)
+                        ply.ClearInventory();
 
                     response = "Everyone's inventories have been cleared now";
                     return true;
                 default:
-                    Player Pl = Player.Get(arguments.At(0));
-                    if (Pl == null)
+                    Player pl = Player.Get(arguments.At(0));
+                    if (pl == null)
                     {
                         response = $"Player not found: {arguments.At(0)}";
                         return false;
                     }
 
-                    Pl.ClearInventory();
-                    response = $"Player {Pl.Nickname}'s inventory have been cleared now";
+                    pl.ClearInventory();
+                    response = $"Player {pl.Nickname}'s inventory have been cleared now";
                     return true;
             }
         }

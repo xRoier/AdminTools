@@ -4,15 +4,17 @@ using UnityEngine;
 
 namespace AdminTools
 {
+	using Exiled.API.Features.Items;
+
 	public class Jailed
 	{
 		public string Userid;
 		public string Name;
-		public List<Inventory.SyncItemInfo> Items;
+		public List<Item> Items;
 		public RoleType Role;
 		public Vector3 Position;
 		public float Health;
-		public Dictionary<AmmoType, uint> Ammo;
+		public Dictionary<AmmoType, ushort> Ammo;
 		public bool CurrentRound;
 	}
 }

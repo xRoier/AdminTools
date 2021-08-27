@@ -48,9 +48,9 @@ namespace AdminTools.Commands.InstantKill
                         return false;
                     }
 
-                    foreach (Player Ply in Plugin.IkHubs.Keys)
-                        if (Ply.ReferenceHub.TryGetComponent(out InstantKillComponent IkCom))
-                            UnityEngine.Object.Destroy(IkCom);
+                    foreach (Player ply in Plugin.IkHubs.Keys)
+                        if (ply.ReferenceHub.TryGetComponent(out InstantKillComponent ikCom))
+                            UnityEngine.Object.Destroy(ikCom);
 
                     response = "Instant killing has been removed from everyone";
                     return true;
@@ -61,21 +61,21 @@ namespace AdminTools.Commands.InstantKill
                         return false;
                     }
 
-                    StringBuilder PlayerLister = StringBuilderPool.Shared.Rent(Plugin.IkHubs.Count != 0 ? "Players with instant killing on:\n" : "No players currently online have instant killing on");
+                    StringBuilder playerLister = StringBuilderPool.Shared.Rent(Plugin.IkHubs.Count != 0 ? "Players with instant killing on:\n" : "No players currently online have instant killing on");
                     if (Plugin.IkHubs.Count == 0)
                     {
-                        response = PlayerLister.ToString();
+                        response = playerLister.ToString();
                         return true;
                     }
 
-                    foreach (Player Ply in Plugin.IkHubs.Keys)
+                    foreach (Player ply in Plugin.IkHubs.Keys)
                     {
-                        PlayerLister.Append(Ply.Nickname);
-                        PlayerLister.Append(", ");
+                        playerLister.Append(ply.Nickname);
+                        playerLister.Append(", ");
                     }
 
-                    string msg = PlayerLister.ToString().Substring(0, PlayerLister.ToString().Length - 2);
-                    StringBuilderPool.Shared.Return(PlayerLister);
+                    string msg = playerLister.ToString().Substring(0, playerLister.ToString().Length - 2);
+                    StringBuilderPool.Shared.Return(playerLister);
                     response = msg;
                     return true;
                 case "remove":
@@ -85,21 +85,21 @@ namespace AdminTools.Commands.InstantKill
                         return false;
                     }
 
-                    Player Pl = Player.Get(arguments.At(1));
-                    if (Pl == null)
+                    Player pl = Player.Get(arguments.At(1));
+                    if (pl == null)
                     {
                         response = $"Player not found: {arguments.At(1)}";
                         return false;
                     }
 
-                    if (Pl.ReferenceHub.TryGetComponent(out InstantKillComponent IkComponent))
+                    if (pl.ReferenceHub.TryGetComponent(out InstantKillComponent ikComponent))
                     {
-                        Plugin.IkHubs.Remove(Pl);
-                        UnityEngine.Object.Destroy(IkComponent);
-                        response = $"Instant killing is off for {Pl.Nickname} now";
+                        Plugin.IkHubs.Remove(pl);
+                        UnityEngine.Object.Destroy(ikComponent);
+                        response = $"Instant killing is off for {pl.Nickname} now";
                     }
                     else
-                        response = $"Player {Pl.Nickname} does not have the ability to instantly kill others";
+                        response = $"Player {pl.Nickname} does not have the ability to instantly kill others";
                     return true;
                 case "*":
                 case "all":
@@ -109,9 +109,9 @@ namespace AdminTools.Commands.InstantKill
                         return false;
                     }
 
-                    foreach (Player Ply in Player.List)
-                        if (!Ply.ReferenceHub.TryGetComponent(out InstantKillComponent _))
-                            Ply.ReferenceHub.gameObject.AddComponent<InstantKillComponent>();
+                    foreach (Player ply in Player.List)
+                        if (!ply.ReferenceHub.TryGetComponent(out InstantKillComponent _))
+                            ply.ReferenceHub.gameObject.AddComponent<InstantKillComponent>();
 
                     response = "Everyone on the server can instantly kill other users now";
                     return true;
@@ -122,22 +122,22 @@ namespace AdminTools.Commands.InstantKill
                         return false;
                     }
 
-                    Player Plyr = Player.Get(arguments.At(0));
-                    if (Plyr == null)
+                    Player plyr = Player.Get(arguments.At(0));
+                    if (plyr == null)
                     {
                         response = $"Player not found: {arguments.At(0)}";
                         return false;
                     }
 
-                    if (!Plyr.ReferenceHub.TryGetComponent(out InstantKillComponent ikComponent))
+                    if (!plyr.ReferenceHub.TryGetComponent(out InstantKillComponent ikComp))
                     {
-                        Plyr.GameObject.AddComponent<InstantKillComponent>();
-                        response = $"Instant killing is on for {Plyr.Nickname}";
+                        plyr.GameObject.AddComponent<InstantKillComponent>();
+                        response = $"Instant killing is on for {plyr.Nickname}";
                     }
                     else
                     {
-                        UnityEngine.Object.Destroy(ikComponent);
-                        response = $"Instant killing is off for {Plyr.Nickname}";
+                        UnityEngine.Object.Destroy(ikComp);
+                        response = $"Instant killing is off for {plyr.Nickname}";
                     }
                     return true;
             }
