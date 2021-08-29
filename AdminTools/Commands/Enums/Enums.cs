@@ -5,6 +5,8 @@ using System.Text;
 
 namespace AdminTools.Commands.Enums
 {
+    using Exiled.API.Enums;
+
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     [CommandHandler(typeof(GameConsoleCommandHandler))]
     public class Enums : ParentCommand

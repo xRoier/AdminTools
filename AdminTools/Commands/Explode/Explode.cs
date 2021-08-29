@@ -5,6 +5,8 @@ using System;
 
 namespace AdminTools.Commands.Explode
 {
+    using Exiled.API.Features.Items;
+
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     [CommandHandler(typeof(GameConsoleCommandHandler))]
     public class Explode : ParentCommand
@@ -49,7 +51,7 @@ namespace AdminTools.Commands.Explode
                             continue;
 
                         ply.Kill();
-                        EventHandlers.SpawnGrenadeOnPlayer(ply, GrenadeType.Frag, 0.1f);
+                        new ExplosiveGrenade(ItemType.GrenadeHE, ply){ FuseTime = 0f }.SpawnActive(ply.Position, ply);
                     }
                     response = "Everyone exploded, Hubert cannot believe you have done this";
                     return true;
@@ -74,7 +76,7 @@ namespace AdminTools.Commands.Explode
                     }
 
                     pl.Kill();
-                    EventHandlers.SpawnGrenadeOnPlayer(pl, GrenadeType.Frag, 0.1f);
+                    new ExplosiveGrenade(ItemType.GrenadeHE, pl){ FuseTime = 0f }.SpawnActive(pl.Position, pl);
                     response = $"Player \"{pl.Nickname}\" game ended (exploded)";
                     return true;
             }

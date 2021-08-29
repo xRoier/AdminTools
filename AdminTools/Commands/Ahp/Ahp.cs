@@ -56,6 +56,7 @@ namespace AdminTools.Commands.Ahp
                         return false;
                     }
 
+                    players.Add(player);
                     break;
             }
 

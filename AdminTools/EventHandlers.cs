@@ -20,7 +20,9 @@ namespace AdminTools
 {
 	using Exiled.API.Extensions;
 	using Exiled.API.Features.Items;
+	using Footprinting;
 	using InventorySystem.Items.Firearms.Attachments;
+	using InventorySystem.Items.Pickups;
 	using InventorySystem.Items.ThrowableProjectiles;
 	using Ragdoll = Exiled.API.Features.Ragdoll;
 
@@ -100,33 +102,43 @@ namespace AdminTools
 
         public static void SpawnWorkbench(Player ply, Vector3 position, Vector3 rotation, Vector3 size, out int benchIndex)
 		{
-			benchIndex = 0;
-			GameObject bench =
-				Object.Instantiate(
-					NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == "Work Station"));
-			rotation.x += 180;
-			rotation.z += 180;
-			Offset offset = new Offset();
-			offset.position = position;
-			offset.rotation = rotation;
-			offset.scale = Vector3.one;
-			bench.gameObject.transform.localScale = size;
-			NetworkServer.Spawn(bench);
-			if (Plugin.BchHubs.TryGetValue(ply, out List<GameObject> objs))
+			try
 			{
-				objs.Add(bench);
+				Log.Debug($"Spawning workbench");
+				benchIndex = 0;
+				GameObject bench =
+					Object.Instantiate(
+						NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == "Work Station"));
+				rotation.x += 180;
+				rotation.z += 180;
+				Offset offset = new Offset();
+				offset.position = position;
+				offset.rotation = rotation;
+				offset.scale = Vector3.one;
+				bench.gameObject.transform.localScale = size;
+				NetworkServer.Spawn(bench);
+				if (Plugin.BchHubs.TryGetValue(ply, out List<GameObject> objs))
+				{
+					objs.Add(bench);
+				}
+				else
+				{
+					Plugin.BchHubs.Add(ply, new List<GameObject>());
+					Plugin.BchHubs[ply].Add(bench);
+					benchIndex = Plugin.BchHubs[ply].Count();
+				}
+
+				if (benchIndex != 1)
+					benchIndex = objs.Count();
+				bench.transform.localPosition = offset.position;
+				bench.transform.localRotation = Quaternion.Euler(offset.rotation);
+				bench.AddComponent<WorkstationController>();
 			}
-			else
+			catch (Exception e)
 			{
-				Plugin.BchHubs.Add(ply, new List<GameObject>());
-				Plugin.BchHubs[ply].Add(bench);
-				benchIndex = Plugin.BchHubs[ply].Count();
+				Log.Error($"{nameof(SpawnWorkbench)}: {e}");
+				benchIndex = -1;
 			}
-			if (benchIndex != 1)
-				benchIndex = objs.Count();
-			bench.transform.localPosition = offset.position;
-			bench.transform.localRotation = Quaternion.Euler(offset.rotation);
-			bench.AddComponent<WorkstationController>();
 		}
 
 		public static void SpawnItem(ItemType type, Vector3 pos, Vector3 rot)
@@ -199,7 +211,7 @@ namespace AdminTools
 				if (amnt >= maxAmnt)
 				{
 					player.IsGodModeEnabled = false;
-					SpawnGrenadeOnPlayer(player, GrenadeType.Frag, 0.05f);
+					new ExplosiveGrenade(ItemType.GrenadeHE) {FuseTime = 0.5f}.SpawnActive(player.Position, player);
 					player.Kill();
 				}
 
@@ -278,25 +290,6 @@ namespace AdminTools
 				player.Role = RoleType.Spectator;
 			}
 			Plugin.JailedPlayers.Remove(jail);
-		}
-
-		public static void SpawnGrenadeOnPlayer(Player player, GrenadeType type, float timer)
-		{
-			Vector3 spawnrand = player.Position + new Vector3(UnityEngine.Random.Range(0f, 2f), UnityEngine.Random.Range(0f, 2f), UnityEngine.Random.Range(0f, 2f));
-			EffectGrenade grenade;
-			switch (type)
-			{
-				case GrenadeType.Flash:
-					grenade = (EffectGrenade) new FlashGrenade(ItemType.GrenadeFlash){FuseTime = timer}.Spawn(spawnrand).Base;
-					break;
-				default:
-					grenade = (EffectGrenade) new ExplosiveGrenade(type == GrenadeType.Scp018
-						? ItemType.SCP018
-						: ItemType.GrenadeHE){FuseTime = timer}.Spawn(spawnrand).Base;
-					break;
-			}
-
-			grenade.ServerActivate();
 		}
 
 		public void OnPlayerVerified(VerifiedEventArgs ev)

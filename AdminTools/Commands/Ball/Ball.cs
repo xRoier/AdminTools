@@ -6,6 +6,7 @@ using System;
 namespace AdminTools.Commands.Ball
 {
     using System.Collections.Generic;
+    using Exiled.API.Features.Items;
 
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     [CommandHandler(typeof(GameConsoleCommandHandler))]
@@ -74,7 +75,7 @@ namespace AdminTools.Commands.Ball
                 Cassie.Message("pitch_1.5 xmas_bouncyballs", true, false);
 
             foreach (Player p in players)
-                EventHandlers.SpawnGrenadeOnPlayer(p, GrenadeType.Scp018, 1f);
+                new ExplosiveGrenade(ItemType.SCP018).SpawnActive(p.Position, p);
             return true;
         }
     }

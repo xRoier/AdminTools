@@ -5,6 +5,10 @@ using System;
 
 namespace AdminTools.Commands.Grenade
 {
+    using Exiled.API.Enums;
+    using Exiled.API.Features.Items;
+    using Exiled.API.Extensions;
+
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     [CommandHandler(typeof(GameConsoleCommandHandler))]
     public class Grenade : ParentCommand
@@ -51,7 +55,7 @@ namespace AdminTools.Commands.Grenade
                             if (pl.Role == RoleType.Spectator || pl.Role == RoleType.None)
                                 continue;
 
-                            EventHandlers.SpawnGrenadeOnPlayer(pl, gType, 0);
+                            new ExplosiveGrenade(ItemType.SCP018, pl).SpawnActive(pl.Position, pl);
                         }
                     }
                     else
@@ -73,7 +77,10 @@ namespace AdminTools.Commands.Grenade
                             if (pl.Role == RoleType.Spectator || pl.Role == RoleType.None)
                                 continue;
 
-                            EventHandlers.SpawnGrenadeOnPlayer(pl, gType, time);
+                            if (gType == GrenadeType.Flashbang)
+                                new FlashGrenade(ItemType.GrenadeFlash, pl){FuseTime = time}.SpawnActive(pl.Position, pl);
+                            else
+                                new ExplosiveGrenade(gType.GetItemType(), pl){FuseTime = time}.SpawnActive(pl.Position, pl);
                         }
                     }
                     response = $"You spawned a {gType.ToString().ToLower()} on everyone";
@@ -98,7 +105,7 @@ namespace AdminTools.Commands.Grenade
                     }
 
                     if (type == GrenadeType.Scp018)
-                        EventHandlers.SpawnGrenadeOnPlayer(ply, type, 0);
+                        new ExplosiveGrenade(ItemType.SCP018, ply).SpawnActive(ply.Position, ply);
                     else
                     {
                         if (arguments.Count != 3)
@@ -112,7 +119,11 @@ namespace AdminTools.Commands.Grenade
                             response = $"Invalid value for grenade timer: {arguments.At(2)}";
                             return false;
                         }
-                        EventHandlers.SpawnGrenadeOnPlayer(ply, type, time);
+                        
+                        if (type == GrenadeType.Flashbang)
+                            new FlashGrenade(ItemType.GrenadeFlash, ply){FuseTime = time}.SpawnActive(ply.Position, ply);
+                        else
+                            new ExplosiveGrenade(type.GetItemType(), ply){FuseTime = time}.SpawnActive(ply.Position, ply);
                     }
 
                     response = $"You spawned a {type.ToString().ToLower()} on {ply.Nickname}";
