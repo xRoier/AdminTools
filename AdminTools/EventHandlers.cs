@@ -53,9 +53,7 @@ namespace AdminTools
 		public static void SpawnDummyModel(Player ply, Vector3 position, Quaternion rotation, RoleType role, float x, float y, float z, out int dummyIndex)
 		{
 			dummyIndex = 0;
-			GameObject obj =
-				Object.Instantiate(
-					NetworkManager.singleton.spawnPrefabs.FirstOrDefault(p => p.gameObject.name == "Player"));
+			GameObject obj = Object.Instantiate(NetworkManager.singleton.playerPrefab);
 			CharacterClassManager ccm = obj.GetComponent<CharacterClassManager>();
 			if (ccm == null)
 				Log.Error("CCM is null, this can cause problems!");
