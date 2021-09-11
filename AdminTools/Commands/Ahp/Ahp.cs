@@ -36,7 +36,7 @@ namespace AdminTools.Commands.Ahp
             }
 
             List<Player> players = new List<Player>();
-            if (!ushort.TryParse(arguments.At(1), out ushort value))
+            if (!float.TryParse(arguments.At(1), out float value))
             {
                 response = $"Invalid value for AHP: {value}";
                 return false;
