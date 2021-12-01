@@ -50,7 +50,7 @@ namespace AdminTools.Commands.Explode
                         if (ply.Role == RoleType.Spectator || ply.Role == RoleType.None)
                             continue;
 
-                        ply.Kill();
+                        ply.Kill("Exploded by admin.");
                         new ExplosiveGrenade(ItemType.GrenadeHE, ply){ FuseTime = 0f }.SpawnActive(ply.Position, ply);
                     }
                     response = "Everyone exploded, Hubert cannot believe you have done this";
@@ -75,7 +75,7 @@ namespace AdminTools.Commands.Explode
                         return false;
                     }
 
-                    pl.Kill();
+                    pl.Kill("Exploded by admin.");
                     new ExplosiveGrenade(ItemType.GrenadeHE, pl){ FuseTime = 0f }.SpawnActive(pl.Position, pl);
                     response = $"Player \"{pl.Nickname}\" game ended (exploded)";
                     return true;

@@ -24,6 +24,7 @@ namespace AdminTools
 	using InventorySystem.Items.Firearms.Attachments;
 	using InventorySystem.Items.Pickups;
 	using InventorySystem.Items.ThrowableProjectiles;
+	using PlayerStatsSystem;
 	using Ragdoll = Exiled.API.Features.Ragdoll;
 
 	public class EventHandlers
@@ -84,7 +85,7 @@ namespace AdminTools
 		{
 			for (int i = 0; i < count; i++)
 			{
-				Ragdoll.Spawn(role, DamageTypes.Falldown, "SCP-343", player.Position, default, default, false, 0);
+				Ragdoll.Spawn(new RagdollInfo(Server.Host.ReferenceHub, new UniversalDamageHandler(0.0f, DeathTranslations.Unknown, string.Empty), role, player.Position, default, "SCP-343", 0));
 				yield return Timing.WaitForSeconds(0.15f);
 			}
 		}
@@ -210,7 +211,7 @@ namespace AdminTools
 				{
 					player.IsGodModeEnabled = false;
 					new ExplosiveGrenade(ItemType.GrenadeHE) {FuseTime = 0.5f}.SpawnActive(player.Position, player);
-					player.Kill();
+					player.Kill("Went on a trip in their favorite rocket ship.");
 				}
 
 				yield return Timing.WaitForOneFrame;

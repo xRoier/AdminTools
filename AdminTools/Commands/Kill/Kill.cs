@@ -42,7 +42,7 @@ namespace AdminTools.Commands.Kill
                         if (ply.Role == RoleType.Spectator || ply.Role == RoleType.None)
                             continue;
 
-                        ply.Kill();
+                        ply.Kill("Killed by admin.");
                     }
 
                     response = "Everyone has been game ended (killed) now";
@@ -60,7 +60,7 @@ namespace AdminTools.Commands.Kill
                         return false;
                     }
 
-                    pl.Kill();
+                    pl.Kill("Killed by admin.");
                     response = $"Player {pl.Nickname} has been game ended (killed) now";
                     return true;
             }
