@@ -75,7 +75,7 @@ namespace AdminTools.Commands.Ball
                 Cassie.Message("pitch_1.5 xmas_bouncyballs", true, false);
 
             foreach (Player p in players)
-                new ExplosiveGrenade(ItemType.SCP018).SpawnActive(p.Position, p);
+                ((ExplosiveGrenade)Item.Create(ItemType.SCP018)).SpawnActive(p.Position, p);
             return true;
         }
     }

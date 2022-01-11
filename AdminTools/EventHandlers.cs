@@ -140,12 +140,7 @@ namespace AdminTools
 			}
 		}
 
-		public static void SpawnItem(ItemType type, Vector3 pos, Vector3 rot)
-		{
-			new Item(type).Spawn(pos, Quaternion.Euler(rot));
-		}
-
-		public static void SetPlayerScale(GameObject target, float x, float y, float z)
+        public static void SetPlayerScale(GameObject target, float x, float y, float z)
 		{
 			try
 			{
@@ -210,7 +205,9 @@ namespace AdminTools
 				if (amnt >= maxAmnt)
 				{
 					player.IsGodModeEnabled = false;
-					new ExplosiveGrenade(ItemType.GrenadeHE) {FuseTime = 0.5f}.SpawnActive(player.Position, player);
+					ExplosiveGrenade grenade = (ExplosiveGrenade)Item.Create(ItemType.GrenadeHE);
+					grenade.FuseTime = 0.5f;
+					grenade.SpawnActive(player.Position, player);
 					player.Kill("Went on a trip in their favorite rocket ship.");
 				}
 

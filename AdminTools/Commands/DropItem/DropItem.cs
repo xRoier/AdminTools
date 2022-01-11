@@ -6,6 +6,8 @@ using UnityEngine;
 
 namespace AdminTools.Commands.DropItem
 {
+    using Exiled.API.Features.Items;
+
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     [CommandHandler(typeof(GameConsoleCommandHandler))]
     public class DropItem : ParentCommand
@@ -58,7 +60,7 @@ namespace AdminTools.Commands.DropItem
 
                     foreach (Player ply in Player.List)
                         for (int i = 0; i < amount; i++)
-                            EventHandlers.SpawnItem(item, ply.Position, Vector3.zero);
+                            Item.Create(item).Spawn(ply.Position);
 
                     response = $"{amount} of {item.ToString()} was spawned on everyone (\"Hehexd\" - Galaxy119)";
                     return true;
@@ -89,7 +91,7 @@ namespace AdminTools.Commands.DropItem
                     }
 
                     for (int i = 0; i < am; i++)
-                        EventHandlers.SpawnItem(it, pl.Position, Vector3.zero);
+                        Item.Create(it).Spawn(pl.Position);
                     response = $"{am} of {it.ToString()} was spawned on {pl.Nickname} (\"Hehexd\" - Galaxy119)";
                     return true;
             }

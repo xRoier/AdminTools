@@ -55,7 +55,9 @@ namespace AdminTools.Commands.Grenade
                             if (pl.Role == RoleType.Spectator || pl.Role == RoleType.None)
                                 continue;
 
-                            new ExplosiveGrenade(ItemType.SCP018, pl).SpawnActive(pl.Position, pl);
+                            ExplosiveGrenade grenade = (ExplosiveGrenade)Item.Create(ItemType.SCP018);
+                            grenade.FuseTime = 0f;
+                            grenade.SpawnActive(pl.Position);
                         }
                     }
                     else
@@ -78,9 +80,17 @@ namespace AdminTools.Commands.Grenade
                                 continue;
 
                             if (gType == GrenadeType.Flashbang)
-                                new FlashGrenade(ItemType.GrenadeFlash, pl){FuseTime = time}.SpawnActive(pl.Position, pl);
+                            {
+                                FlashGrenade grenade = (FlashGrenade)Item.Create(ItemType.GrenadeFlash);
+                                grenade.FuseTime = 0f;
+                                grenade.SpawnActive(pl.Position);
+                            }
                             else
-                                new ExplosiveGrenade(gType.GetItemType(), pl){FuseTime = time}.SpawnActive(pl.Position, pl);
+                            {
+                                ExplosiveGrenade grenade = (ExplosiveGrenade)Item.Create(ItemType.GrenadeHE);
+                                grenade.FuseTime = 0f;
+                                grenade.SpawnActive(pl.Position);
+                            }
                         }
                     }
                     response = $"You spawned a {gType.ToString().ToLower()} on everyone";
@@ -105,7 +115,11 @@ namespace AdminTools.Commands.Grenade
                     }
 
                     if (type == GrenadeType.Scp018)
-                        new ExplosiveGrenade(ItemType.SCP018, ply).SpawnActive(ply.Position, ply);
+                    {
+                        ExplosiveGrenade grenade = (ExplosiveGrenade)Item.Create(ItemType.SCP018);
+                        grenade.FuseTime = 0f;
+                        grenade.SpawnActive(ply.Position);
+                    }
                     else
                     {
                         if (arguments.Count != 3)
@@ -119,11 +133,19 @@ namespace AdminTools.Commands.Grenade
                             response = $"Invalid value for grenade timer: {arguments.At(2)}";
                             return false;
                         }
-                        
+
                         if (type == GrenadeType.Flashbang)
-                            new FlashGrenade(ItemType.GrenadeFlash, ply){FuseTime = time}.SpawnActive(ply.Position, ply);
+                        {
+                            FlashGrenade grenade = (FlashGrenade)Item.Create(ItemType.GrenadeFlash);
+                            grenade.FuseTime = 0f;
+                            grenade.SpawnActive(ply.Position);
+                        }
                         else
-                            new ExplosiveGrenade(type.GetItemType(), ply){FuseTime = time}.SpawnActive(ply.Position, ply);
+                        {
+                            ExplosiveGrenade grenade = (ExplosiveGrenade)Item.Create(ItemType.GrenadeHE);
+                            grenade.FuseTime = 0f;
+                            grenade.SpawnActive(ply.Position);
+                        }
                     }
 
                     response = $"You spawned a {type.ToString().ToLower()} on {ply.Nickname}";
