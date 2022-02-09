@@ -85,7 +85,7 @@ namespace AdminTools
 		{
 			for (int i = 0; i < count; i++)
 			{
-				Ragdoll.Spawn(new RagdollInfo(Server.Host.ReferenceHub, new UniversalDamageHandler(0.0f, DeathTranslations.Unknown, string.Empty), role, player.Position, default, "SCP-343", 0));
+				Ragdoll.Spawn(new RagdollInfo(Server.Host.ReferenceHub, new UniversalDamageHandler(0.0f, DeathTranslations.Unknown, DamageHandlerBase.CassieAnnouncement.Default), role, player.Position, default, "SCP-343", 0));
 				yield return Timing.WaitForSeconds(0.15f);
 			}
 		}
@@ -264,7 +264,7 @@ namespace AdminTools
 				player.IsOverwatchEnabled = false;
 			yield return Timing.WaitForSeconds(1f);
 			player.ClearInventory(false);
-			player.Role = RoleType.Tutorial;
+			player.SetRole(RoleType.Tutorial);
 			player.Position = new Vector3(53f, 1020f, -44f);
 		}
 
@@ -283,7 +283,7 @@ namespace AdminTools
 			}
 			else
 			{
-				player.Role = RoleType.Spectator;
+				player.SetRole(RoleType.Spectator);
 			}
 			Plugin.JailedPlayers.Remove(jail);
 		}
