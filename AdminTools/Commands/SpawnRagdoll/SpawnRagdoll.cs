@@ -6,6 +6,12 @@ using System;
 
 namespace AdminTools.Commands.SpawnRagdoll
 {
+    using System.Collections.Generic;
+    using Mirror;
+    using PlayerStatsSystem;
+    using UnityEngine;
+    using Ragdoll = Exiled.API.Features.Ragdoll;
+
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     [CommandHandler(typeof(GameConsoleCommandHandler))]
     public class SpawnRagdoll : ParentCommand
@@ -34,60 +40,52 @@ namespace AdminTools.Commands.SpawnRagdoll
                 return false;
             }
 
+            if (!Enum.TryParse(arguments.At(1), true, out RoleType type))
+            {
+                response = $"Invalid RoleType for ragdoll: {arguments.At(1)}";
+                return false;
+            }
+
+            if (!int.TryParse(arguments.At(2), out int amount))
+            {
+                response = $"Invalid amount of ragdolls to spawn: {arguments.At(2)}";
+                return false;
+            }
+
             switch (arguments.At(0))
             {
                 case "*":
                 case "all":
-                    if (!Enum.TryParse(arguments.At(0), true, out RoleType role))
+                    foreach (Player player in Player.List)
                     {
-                        response = $"Invalid value for role type: {arguments.At(0)}";
-                        return false;
+                        if (player.Role != RoleType.Spectator) 
+                            Timing.RunCoroutine(SpawnDolls(player, type, amount));
                     }
 
-                    if (!uint.TryParse(arguments.At(1), out uint amount))
-                    {
-                        response = $"Invalid value for ragdoll amount: {arguments.At(1)}";
-                        return false;
-                    }
-
-                    foreach (Player ply in Player.List)
-                    {
-                        if (ply.Role == RoleType.Spectator || ply.Role == RoleType.None)
-                            continue;
-
-                        Timing.RunCoroutine(EventHandlers.SpawnBodies(ply, role, (int)amount));
-                    }
-
-                    response = $"{amount} {role.ToString()} ragdolls have spawned on everyone";
-                    return true;
+                    break;
                 default:
-                    Player pl = Player.Get(arguments.At(0));
-                    if (pl == null)
+                    Player ply = Player.Get(arguments.At(0));
+                    if (ply is null)
                     {
-                        response = $"Player not found: {arguments.At(0)}";
-                        return false;
-                    }
-                    else if (pl.Role == RoleType.Spectator || pl.Role == RoleType.None)
-                    {
-                        response = $"This player is not a valid class to spawn a ragdoll on";
+                        response = $"Player {arguments.At(0)} not found.";
                         return false;
                     }
 
-                    if (!Enum.TryParse(arguments.At(1), true, out RoleType r))
-                    {
-                        response = $"Invalid value for role type: {arguments.At(1)}";
-                        return false;
-                    }
+                    Timing.RunCoroutine(SpawnDolls(ply, type, amount));
 
-                    if (!uint.TryParse(arguments.At(2), out uint count))
-                    {
-                        response = $"Invalid value for ragdoll amount: {arguments.At(2)}";
-                        return false;
-                    }
+                    break;
+            }
 
-                    Timing.RunCoroutine(EventHandlers.SpawnBodies(pl, r, (int)count));
-                    response = $"{count} {r.ToString()} ragdolls have spawned on Player {pl.Nickname}";
-                    return true;
+            response = $"{amount} {type} ragdoll(s) have been spawned on {arguments.At(0)}.";
+            return true;
+        }
+
+        private IEnumerator<float> SpawnDolls(Player player, RoleType type, int amount)
+        {
+            for (int i = 0; i < amount; i++)
+            {
+                new Ragdoll(new RagdollInfo(Server.Host.ReferenceHub, new UniversalDamageHandler(200, DeathTranslations.Crushed), type, player.Position + (Vector3.up * 3f), default, "SCP-343", NetworkTime.time), true);
+                yield return Timing.WaitForSeconds(0.5f);
             }
         }
     }

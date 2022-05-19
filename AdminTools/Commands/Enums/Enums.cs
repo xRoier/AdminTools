@@ -24,12 +24,7 @@ namespace AdminTools.Commands.Enums
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
             StringBuilder listBuilder = StringBuilderPool.Shared.Rent();
-            listBuilder.Append("Here are the following enums you can use in commands:\n\nBreakType: ");
-            foreach (BreakType bt in Enum.GetValues(typeof(BreakType)))
-            {
-                listBuilder.Append(bt.ToString());
-                listBuilder.Append(" ");
-            }
+            listBuilder.Append("Here are the following enums you can use in commands:");
             listBuilder.AppendLine();
             listBuilder.Append("GrenadeType: ");
             foreach (GrenadeType gt in Enum.GetValues(typeof(GrenadeType)))

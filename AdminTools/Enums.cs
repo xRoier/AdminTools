@@ -1,11 +1,5 @@
 ﻿namespace AdminTools
 {
-	public enum BreakType
-	{
-		Doors,
-		All
-	}
-
 	public enum VectorAxis
 	{
 		X,

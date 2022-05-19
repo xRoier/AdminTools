@@ -31,6 +31,7 @@ namespace AdminTools
 	{
 		private readonly Plugin _plugin;
 		public EventHandlers(Plugin plugin) => this._plugin = plugin;
+		public static List<Player> BreakDoorsList { get; } = new();
 
 		public void OnDoorOpen(InteractingDoorEventArgs ev)
 		{
@@ -110,7 +111,7 @@ namespace AdminTools
 						NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == "Work Station"));
 				rotation.x += 180;
 				rotation.z += 180;
-				Offset offset = new Offset();
+				Offset offset = new();
 				offset.position = position;
 				offset.rotation = rotation;
 				offset.scale = Vector3.one;
@@ -147,7 +148,7 @@ namespace AdminTools
 				NetworkIdentity identity = target.GetComponent<NetworkIdentity>();
 				target.transform.localScale = new Vector3(1 * x, 1 * y, 1 * z);
 
-				ObjectDestroyMessage destroyMessage = new ObjectDestroyMessage();
+				ObjectDestroyMessage destroyMessage = new();
 				destroyMessage.netId = identity.netId;
 
 				foreach (GameObject player in PlayerManager.players)
@@ -173,7 +174,7 @@ namespace AdminTools
 				NetworkIdentity identity = target.GetComponent<NetworkIdentity>();
 				target.transform.localScale = Vector3.one * scale;
 
-				ObjectDestroyMessage destroyMessage = new ObjectDestroyMessage();
+				ObjectDestroyMessage destroyMessage = new();
 				destroyMessage.netId = identity.netId;
 
 				foreach (GameObject player in PlayerManager.players)
@@ -215,32 +216,10 @@ namespace AdminTools
 			}
 		}
 
-		// I found the below code to be very overcomplicated for the task at hand. Not sure why it was written like this......
-
-		/*
-		public static IEnumerator<float> DoTut(Player player)
-		{
-			if (player.IsOverwatchEnabled)
-				player.IsOverwatchEnabled = false;
-
-			player.Role = RoleType.Tutorial;
-			yield return Timing.WaitForSeconds(1f);
-			Door[] d = UnityEngine.Object.FindObjectsOfType<Door>();
-			foreach (Door door in d)
-				if (door.DoorName == "SURFACE_GATE")
-				{
-					player.Position = door.transform.position + Vector3.up * 2;
-					break;
-				}
-
-			player.ReferenceHub.serverRoles.CallTargetSetNoclipReady(player.ReferenceHub.characterClassManager.connectionToClient, true);
-			player.ReferenceHub.serverRoles.NoclipReady = true;
-		}*/
-
 		public static IEnumerator<float> DoJail(Player player, bool skipadd = false)
 		{
-			List<Item> items = new List<Item>();
-			Dictionary<AmmoType, ushort> ammo = new Dictionary<AmmoType, ushort>();
+			List<Item> items = new();
+			Dictionary<AmmoType, ushort> ammo = new();
 			foreach (KeyValuePair<ItemType, ushort> kvp in player.Ammo)
 				ammo.Add(kvp.Key.GetAmmoType(), kvp.Value);
 			foreach (Item item in player.Items)
@@ -275,11 +254,18 @@ namespace AdminTools
 			{
 				player.SetRole(jail.Role, SpawnReason.ForceClass, true);
 				yield return Timing.WaitForSeconds(0.5f);
-				player.ResetInventory(jail.Items);
-				player.Health = jail.Health;
-				player.Position = jail.Position;
-				foreach (KeyValuePair<AmmoType, ushort> kvp in jail.Ammo)
-					player.Ammo[kvp.Key.GetItemType()] = kvp.Value;
+				try
+				{
+					player.ResetInventory(jail.Items);
+					player.Health = jail.Health;
+					player.Position = jail.Position;
+					foreach (KeyValuePair<AmmoType, ushort> kvp in jail.Ammo)
+						player.Ammo[kvp.Key.GetItemType()] = kvp.Value;
+				}
+				catch (Exception e)
+				{
+					Log.Error($"{nameof(DoUnJail)}: {e}");
+				}
 			}
 			else
 			{
@@ -395,7 +381,13 @@ namespace AdminTools
 		public void OnWaitingForPlayers()
 		{
 			Plugin.IkHubs.Clear();
-			Plugin.BdHubs.Clear();
+			BreakDoorsList.Clear();
+		}
+
+		public void OnPlayerInteractingDoor(InteractingDoorEventArgs ev)
+		{
+			if (BreakDoorsList.Contains(ev.Player))
+				ev.Door.BreakDoor();
 		}
 	}
 }

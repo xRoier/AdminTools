@@ -5,6 +5,8 @@ using UnityEngine;
 
 namespace AdminTools.Commands.Kick
 {
+    using Exiled.API.Features;
+
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     [CommandHandler(typeof(GameConsoleCommandHandler))]
     public class Kick : ParentCommand
@@ -33,15 +35,15 @@ namespace AdminTools.Commands.Kick
                 return false;
             }
 
-            GameObject ply = Exiled.API.Features.Player.Get(arguments.At(0)).GameObject;
+            Player ply = Player.Get(arguments.At(0));
             if (ply == null)
             {
                 response = $"Player not found: {arguments.At(0)}";
                 return false;
             }
 
-            ServerConsole.Disconnect(ply, EventHandlers.FormatArguments(arguments, 1));
-            response = $"Player {Exiled.API.Features.Player.Get(arguments.At(0)).Nickname} has been kicked for \"{EventHandlers.FormatArguments(arguments, 1)}\"";
+            ply.Kick(EventHandlers.FormatArguments(arguments, 1));
+            response = $"Player {ply.Nickname} has been kicked for \"{EventHandlers.FormatArguments(arguments, 1)}\"";
             return true;
         }
     }

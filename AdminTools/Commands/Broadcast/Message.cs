@@ -79,7 +79,7 @@ namespace AdminTools.Commands.Message
                     }
 
                     string[] users = arguments.At(1).Split(',');
-                    List<Player> plyList = new List<Player>();
+                    List<Player> plyList = new();
                     foreach (string s in users)
                     {
                         if (int.TryParse(s, out int id) && Player.Get(id) != null)
@@ -146,7 +146,7 @@ namespace AdminTools.Commands.Message
                     }
 
                     string[] groups = arguments.At(1).Split(',');
-                    List<string> groupList = new List<string>();
+                    List<string> groupList = new();
                     foreach (string s in groups)
                     {
                         UserGroup broadGroup = ServerStatic.PermissionsHandler.GetGroup(s);
@@ -213,7 +213,7 @@ namespace AdminTools.Commands.Message
                     }
 
                     string[] roles = arguments.At(1).Split(',');
-                    List<RoleType> roleList = new List<RoleType>();
+                    List<RoleType> roleList = new();
                     foreach (string s in roles)
                     {
                         if (Enum.TryParse(s, true, out RoleType r))

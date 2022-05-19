@@ -8,6 +8,7 @@ namespace AdminTools.Commands.Grenade
     using Exiled.API.Enums;
     using Exiled.API.Features.Items;
     using Exiled.API.Extensions;
+    using InventorySystem.Items.ThrowableProjectiles;
 
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     [CommandHandler(typeof(GameConsoleCommandHandler))]
@@ -37,119 +38,63 @@ namespace AdminTools.Commands.Grenade
                 return false;
             }
 
+            if (!Enum.TryParse(arguments.At(1), true, out GrenadeType type))
+            {
+                response = $"Invalid value for grenade type: {arguments.At(1)}";
+                return false;
+            }
+
+            if (!float.TryParse(arguments.At(2), out float fuseTime))
+            {
+                response = $"Invalid fuse time for grenade: {arguments.At(2)}";
+                return false;
+            }
+
             switch (arguments.At(0))
             {
                 case "*":
                 case "all":
-                    if (!Enum.TryParse(arguments.At(1), true, out GrenadeType gType))
-                    {
-                        response = $"Invalid value for grenade name: {arguments.At(1)}";
-                        return false;
-                    }
-
-                    if (gType == GrenadeType.Scp018)
-                    {
+                    if (type == GrenadeType.Scp018)
                         Cassie.Message("pitch_1.5 xmas_bouncyballs", true, false);
-                        foreach (Player pl in Player.List)
-                        {
-                            if (pl.Role == RoleType.Spectator || pl.Role == RoleType.None)
-                                continue;
-
-                            ExplosiveGrenade grenade = (ExplosiveGrenade)Item.Create(ItemType.SCP018);
-                            grenade.FuseTime = 0f;
-                            grenade.SpawnActive(pl.Position);
-                        }
-                    }
-                    else
+                    
+                    foreach (Player player in Player.List)
                     {
-                        if (arguments.Count != 3)
-                        {
-                            response = "Usage: grenade ((player id / name) or (all / *)) (GrenadeType) (grenade time)";
-                            return false;
-                        }
-
-                        if (!float.TryParse(arguments.At(2), out float time))
-                        {
-                            response = $"Invalid value for grenade timer: {arguments.At(2)}";
-                            return false;
-                        }
-
-                        foreach (Player pl in Player.List)
-                        {
-                            if (pl.Role == RoleType.Spectator || pl.Role == RoleType.None)
-                                continue;
-
-                            if (gType == GrenadeType.Flashbang)
-                            {
-                                FlashGrenade grenade = (FlashGrenade)Item.Create(ItemType.GrenadeFlash);
-                                grenade.FuseTime = 0f;
-                                grenade.SpawnActive(pl.Position);
-                            }
-                            else
-                            {
-                                ExplosiveGrenade grenade = (ExplosiveGrenade)Item.Create(ItemType.GrenadeHE);
-                                grenade.FuseTime = 0f;
-                                grenade.SpawnActive(pl.Position);
-                            }
-                        }
+                        if (player.Role != RoleType.Spectator) 
+                            SpawnGrenade(player, type, fuseTime);
                     }
-                    response = $"You spawned a {gType.ToString().ToLower()} on everyone";
-                    return true;
+
+                    break;
                 default:
                     Player ply = Player.Get(arguments.At(0));
-                    if (ply == null)
+                    if (ply is null)
                     {
-                        response = $"Player not found: {arguments.At(0)}";
-                        return false;
-                    }
-                    else if (ply.Role == RoleType.Spectator || ply.Role == RoleType.None)
-                    {
-                        response = $"Player {ply.Nickname} is not a valid class to spawn a grenade on";
+                        response = $"Player {arguments.At(0)} not found.";
                         return false;
                     }
 
-                    if (!Enum.TryParse(arguments.At(1), true, out GrenadeType type))
-                    {
-                        response = $"Invalid value for grenade name: {arguments.At(1)}";
-                        return false;
-                    }
+                    SpawnGrenade(ply, type, fuseTime);
+                    break;
+            }
 
-                    if (type == GrenadeType.Scp018)
-                    {
-                        ExplosiveGrenade grenade = (ExplosiveGrenade)Item.Create(ItemType.SCP018);
-                        grenade.FuseTime = 0f;
-                        grenade.SpawnActive(ply.Position);
-                    }
-                    else
-                    {
-                        if (arguments.Count != 3)
-                        {
-                            response = "Usage: grenade ((player id / name) or (all / *)) (GrenadeType) (grenade time)";
-                            return false;
-                        }
+            response = $"Grenade has been sent to {arguments.At(0)}";
+            return true;
+        }
 
-                        if (!float.TryParse(arguments.At(2), out float time))
-                        {
-                            response = $"Invalid value for grenade timer: {arguments.At(2)}";
-                            return false;
-                        }
+        private void SpawnGrenade(Player player, GrenadeType type, float fuseTime)
+        {
+            switch (type)
+            {
+                case GrenadeType.Flashbang:
+                    FlashGrenade flash = (FlashGrenade) Item.Create(ItemType.GrenadeFlash);
+                    flash.FuseTime = fuseTime;
+                    flash.SpawnActive(player.Position);
 
-                        if (type == GrenadeType.Flashbang)
-                        {
-                            FlashGrenade grenade = (FlashGrenade)Item.Create(ItemType.GrenadeFlash);
-                            grenade.FuseTime = 0f;
-                            grenade.SpawnActive(ply.Position);
-                        }
-                        else
-                        {
-                            ExplosiveGrenade grenade = (ExplosiveGrenade)Item.Create(ItemType.GrenadeHE);
-                            grenade.FuseTime = 0f;
-                            grenade.SpawnActive(ply.Position);
-                        }
-                    }
-
-                    response = $"You spawned a {type.ToString().ToLower()} on {ply.Nickname}";
-                    return true;
+                    break;
+                default:
+                    ExplosiveGrenade grenade = (ExplosiveGrenade) Item.Create(type.GetItemType());
+                    grenade.FuseTime = fuseTime;
+                    grenade.SpawnActive(player.Position);
+                    break;
             }
         }
     }

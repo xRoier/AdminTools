@@ -12,23 +12,22 @@ namespace AdminTools
 		public override string Author { get; } = "Originally by Galaxy119. Modifications by KoukoCocoa & Thomasjosif";
 		public override string Name { get; } = "Admin Tools";
 		public override string Prefix { get; } = "AT";
-		public override Version RequiredExiledVersion { get; } = new Version(5, 1, 0);
+		public override Version RequiredExiledVersion { get; } = new(5, 1, 0);
 
 		public EventHandlers EventHandlers;
-		public static System.Random NumGen = new System.Random();
-		public static List<Jailed> JailedPlayers = new List<Jailed>();
-		public static Dictionary<Player, InstantKillComponent> IkHubs = new Dictionary<Player, InstantKillComponent>();
-		public static Dictionary<Player, BreakDoorComponent> BdHubs = new Dictionary<Player, BreakDoorComponent>();
-		public static Dictionary<Player, RegenerationComponent> RgnHubs = new Dictionary<Player, RegenerationComponent>();
-		public static HashSet<Player> PryGateHubs = new HashSet<Player>();
-		public static Dictionary<Player, List<GameObject>> BchHubs = new Dictionary<Player, List<GameObject>>();
-		public static Dictionary<Player, List<GameObject>> DumHubs = new Dictionary<Player, List<GameObject>>();
+		public static System.Random NumGen = new();
+		public static List<Jailed> JailedPlayers = new();
+		public static Dictionary<Player, InstantKillComponent> IkHubs = new();
+		public static Dictionary<Player, RegenerationComponent> RgnHubs = new();
+		public static HashSet<Player> PryGateHubs = new();
+		public static Dictionary<Player, List<GameObject>> BchHubs = new();
+		public static Dictionary<Player, List<GameObject>> DumHubs = new();
 		public static float HealthGain = 5;
 		public static float HealthInterval = 1;
 		public string OverwatchFilePath;
 		public string HiddenTagsFilePath;
 		public static bool RestartOnEnd = false;
-		public static HashSet<Player> RoundStartMutes = new HashSet<Player>();
+		public static HashSet<Player> RoundStartMutes = new();
 
 		public override void OnEnabled()
 		{
@@ -61,6 +60,7 @@ namespace AdminTools
 				Handlers.Player.InteractingDoor += EventHandlers.OnDoorOpen;
 				Handlers.Server.RoundStarted += EventHandlers.OnRoundStart;
 				Handlers.Player.Destroying += EventHandlers.OnPlayerDestroyed;
+				Handlers.Player.InteractingDoor += EventHandlers.OnPlayerInteractingDoor;
 			}
 			catch (Exception e)
 			{

@@ -36,7 +36,7 @@ namespace AdminTools.Commands.Ball
                 return false;
             }
 
-            List<Player> players = new List<Player>();
+            List<Player> players = new();
             switch (arguments.At(0)) 
             {
                 case "*":
