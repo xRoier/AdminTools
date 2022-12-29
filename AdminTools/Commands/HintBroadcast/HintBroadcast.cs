@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using PlayerRoles;
 
 namespace AdminTools.Commands.HintBroadcast
 {
@@ -38,8 +39,8 @@ namespace AdminTools.Commands.HintBroadcast
                     "\nhbc users (player id / name group (i.e.: 1,2,3 or hello,there,hehe)) (time) (message)" +
                     "\nhbc group (group name) (time) (message)" +
                     "\nhbc groups (list of groups (i.e.: owner,admin,moderator)) (time) (message)" +
-                    "\nhbc role (RoleType) (time) (message)" +
-                    "\nhbc roles (RoleType group (i.e.: ClassD,Scientist,NtfCadet)) (time) (message)" +
+                    "\nhbc role (RoleTypeId) (time) (message)" +
+                    "\nhbc roles (RoleTypeId group (i.e.: ClassD,Scientist,NtfCadet)) (time) (message)" +
                     "\nhbc (random / someone) (time) (message)" +
                     "\nhbc (staff / admin) (time) (message)" +
                     "\nhbc clearall";
@@ -181,13 +182,13 @@ namespace AdminTools.Commands.HintBroadcast
                 case "role":
                     if (arguments.Count < 4)
                     {
-                        response = "Usage: hbc role (RoleType) (time) (message)";
+                        response = "Usage: hbc role (RoleTypeId) (time) (message)";
                         return false;
                     }
 
-                    if (!Enum.TryParse(arguments.At(1), true, out RoleType role))
+                    if (!Enum.TryParse(arguments.At(1), true, out RoleTypeId role))
                     {
-                        response = $"Invalid value for RoleType: {arguments.At(1)}";
+                        response = $"Invalid value for RoleTypeId: {arguments.At(1)}";
                         return false;
                     }
 
@@ -199,7 +200,7 @@ namespace AdminTools.Commands.HintBroadcast
 
                     foreach (Player player in Player.List)
                     {
-                        if (player.Role == role)
+                        if (player.Role.Type== role)
                             player.ShowHint(EventHandlers.FormatArguments(arguments, 3), te);
                     }
 
@@ -208,15 +209,15 @@ namespace AdminTools.Commands.HintBroadcast
                 case "roles":
                     if (arguments.Count < 4)
                     {
-                        response = "Usage: hbc roles (RoleType group (i.e.: ClassD, Scientist, NtfCadet)) (time) (message)";
+                        response = "Usage: hbc roles (RoleTypeId group (i.e.: ClassD, Scientist, NtfCadet)) (time) (message)";
                         return false;
                     }
 
                     string[] roles = arguments.At(1).Split(',');
-                    List<RoleType> roleList = new();
+                    List<RoleTypeId> roleList = new();
                     foreach (string s in roles)
                     {
-                        if (Enum.TryParse(s, true, out RoleType r))
+                        if (Enum.TryParse(s, true, out RoleTypeId r))
                             roleList.Add(r);
                     }
 
@@ -231,7 +232,7 @@ namespace AdminTools.Commands.HintBroadcast
                             p.ShowHint(EventHandlers.FormatArguments(arguments, 3), ti);
 
                     StringBuilder build = StringBuilderPool.Shared.Rent("Hint sent to roles: ");
-                    foreach (RoleType ro in roleList)
+                    foreach (RoleTypeId ro in roleList)
                     {
                         build.Append("\"");
                         build.Append(ro.ToString());

@@ -1,5 +1,6 @@
 using Exiled.API.Enums;
 using System.Collections.Generic;
+using PlayerRoles;
 using UnityEngine;
 
 namespace AdminTools
@@ -11,7 +12,7 @@ namespace AdminTools
 		public string Userid;
 		public string Name;
 		public List<Item> Items;
-		public RoleType Role;
+		public RoleTypeId Role;
 		public Vector3 Position;
 		public float Health;
 		public Dictionary<AmmoType, ushort> Ammo;

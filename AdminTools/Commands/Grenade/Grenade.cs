@@ -2,6 +2,7 @@
 using Exiled.API.Features;
 using Exiled.Permissions.Extensions;
 using System;
+using PlayerRoles;
 
 namespace AdminTools.Commands.Grenade
 {
@@ -59,7 +60,7 @@ namespace AdminTools.Commands.Grenade
                     
                     foreach (Player player in Player.List)
                     {
-                        if (player.Role != RoleType.Spectator) 
+                        if (player.Role.Type != RoleTypeId.Spectator) 
                             SpawnGrenade(player, type, fuseTime);
                     }
 

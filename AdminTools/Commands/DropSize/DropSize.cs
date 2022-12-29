@@ -3,6 +3,7 @@ using Exiled.API.Features;
 using Exiled.Permissions.Extensions;
 using Mirror;
 using System;
+using PlayerRoles;
 using UnityEngine;
 
 namespace AdminTools.Commands.DropSize
@@ -152,7 +153,7 @@ namespace AdminTools.Commands.DropSize
         {
             foreach (Player ply in Player.List)
             {
-                if (ply.Role == RoleType.Spectator || ply.Role == RoleType.None)
+                if (ply.Role.Type== RoleTypeId.Spectator || ply.Role.Type== RoleTypeId.None)
                     continue;
 
                 Item.Create(type).Spawn(ply.Position).Scale = Vector3.one * size;
@@ -164,7 +165,7 @@ namespace AdminTools.Commands.DropSize
         {
             foreach (Player ply in Player.List)
             {
-                if (ply.Role == RoleType.Spectator || ply.Role == RoleType.None)
+                if (ply.Role.Type== RoleTypeId.Spectator || ply.Role.Type== RoleTypeId.None)
                     continue;
 
                 Item.Create(type).Spawn(ply.Position).Scale = new Vector3(x, y, z);

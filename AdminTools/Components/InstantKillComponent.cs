@@ -1,5 +1,6 @@
 ﻿using Exiled.API.Features;
 using Exiled.Events.EventArgs;
+using Exiled.Events.EventArgs.Player;
 using UnityEngine;
 using Handlers = Exiled.Events.Handlers;
 
@@ -31,7 +32,7 @@ namespace AdminTools
 
         public void RunWhenPlayerIsHurt(HurtingEventArgs ev)
         {
-            if (ev.Attacker != ev.Target && ev.Attacker == Player)
+            if (ev.Attacker != ev.Player && ev.Attacker == Player)
                 ev.Amount = int.MaxValue;
         }
     }

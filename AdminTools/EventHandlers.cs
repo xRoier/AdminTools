@@ -6,11 +6,14 @@ using System.Text;
 using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
+using Exiled.Events.EventArgs.Player;
+using Exiled.Events.EventArgs.Server;
 using Exiled.Permissions;
 using Interactables.Interobjects;
 using MEC;
 using Mirror;
 using NorthwoodLib.Pools;
+using PlayerRoles;
 using RemoteAdmin;
 using UnityEngine;
 using Log = Exiled.API.Features.Log;
@@ -52,14 +55,14 @@ namespace AdminTools
 			return msg;
 		}
 
-		public static void SpawnDummyModel(Player ply, Vector3 position, Quaternion rotation, RoleType role, float x, float y, float z, out int dummyIndex)
+		/*public static void SpawnDummyModel(Player ply, Vector3 position, Quaternion rotation, RoleTypeId role, float x, float y, float z, out int dummyIndex)
 		{
 			dummyIndex = 0;
 			GameObject obj = Object.Instantiate(NetworkManager.singleton.playerPrefab);
 			CharacterClassManager ccm = obj.GetComponent<CharacterClassManager>();
 			if (ccm == null)
 				Log.Error("CCM is null, this can cause problems!");
-			ccm.CurClass = role;
+			ccm. = role;
 			ccm.GodMode = true;
 			obj.GetComponent<NicknameSync>().Network_myNickSync = "Dummy";
 			obj.GetComponent<QueryProcessor>().PlayerId = 9999;
@@ -80,18 +83,9 @@ namespace AdminTools
 			}
 			if (dummyIndex != 1)
 				dummyIndex = objs.Count();
-		}
+		}*/
 
-		public static IEnumerator<float> SpawnBodies(Player player, RoleType role, int count)
-		{
-			for (int i = 0; i < count; i++)
-			{
-				Ragdoll.Spawn(new RagdollInfo(Server.Host.ReferenceHub, new UniversalDamageHandler(0.0f, DeathTranslations.Unknown, DamageHandlerBase.CassieAnnouncement.Default), role, player.Position, default, "SCP-343", 0));
-				yield return Timing.WaitForSeconds(0.15f);
-			}
-		}
-
-        public void OnPlayerDestroyed(DestroyingEventArgs ev)
+		public void OnPlayerDestroyed(DestroyingEventArgs ev)
         {
 			if (Plugin.RoundStartMutes.Contains(ev.Player))
             {
@@ -151,10 +145,10 @@ namespace AdminTools
 				ObjectDestroyMessage destroyMessage = new();
 				destroyMessage.netId = identity.netId;
 
-				foreach (GameObject player in PlayerManager.players)
+				foreach (Player player in Player.List)
 				{
-					NetworkConnection playerCon = player.GetComponent<NetworkIdentity>().connectionToClient;
-					if (player != target)
+					NetworkConnection playerCon = player.NetworkIdentity.connectionToClient;
+					if (player.GameObject != target)
 						playerCon.Send(destroyMessage, 0);
 
 					object[] parameters = new object[] { identity, playerCon };
@@ -177,12 +171,12 @@ namespace AdminTools
 				ObjectDestroyMessage destroyMessage = new();
 				destroyMessage.netId = identity.netId;
 
-				foreach (GameObject player in PlayerManager.players)
+				foreach (Player player in Player.List)
 				{
-					if (player == target)
+					if (player.GameObject == target)
 						continue;
 
-					NetworkConnection playerCon = player.GetComponent<NetworkIdentity>().connectionToClient;
+					NetworkConnection playerCon = player.NetworkIdentity.connectionToClient;
 					playerCon.Send(destroyMessage, 0);
 
 					object[] parameters = new object[] { identity, playerCon };
@@ -199,7 +193,7 @@ namespace AdminTools
 		{
 			const int maxAmnt = 50;
 			int amnt = 0;
-			while (player.Role != RoleType.Spectator)
+			while (player.Role.Type!= RoleTypeId.Spectator)
 			{
 				player.Position += Vector3.up * speed;
 				amnt++;
@@ -243,7 +237,7 @@ namespace AdminTools
 				player.IsOverwatchEnabled = false;
 			yield return Timing.WaitForSeconds(1f);
 			player.ClearInventory(false);
-			player.SetRole(RoleType.Tutorial);
+			player.Role.Set(RoleTypeId.Tutorial);
 			player.Position = new Vector3(53f, 1020f, -44f);
 		}
 
@@ -252,7 +246,7 @@ namespace AdminTools
 			Jailed jail = Plugin.JailedPlayers.Find(j => j.Userid == player.UserId);
 			if (jail.CurrentRound)
 			{
-				player.SetRole(jail.Role, SpawnReason.ForceClass, true);
+				player.Role.Set(jail.Role, SpawnReason.ForceClass);
 				yield return Timing.WaitForSeconds(0.5f);
 				try
 				{
@@ -269,7 +263,7 @@ namespace AdminTools
 			}
 			else
 			{
-				player.SetRole(RoleType.Spectator);
+				player.Role.Set(RoleTypeId.Spectator);
 			}
 			Plugin.JailedPlayers.Remove(jail);
 		}
@@ -369,13 +363,13 @@ namespace AdminTools
 		public void OnTriggerTesla(TriggeringTeslaEventArgs ev)
 		{
 			if (ev.Player.IsGodModeEnabled)
-				ev.IsTriggerable = false;
+				ev.IsAllowed = false;
 		}
 
 		public void OnSetClass(ChangingRoleEventArgs ev)
 		{
 			if (_plugin.Config.GodTuts)
-				ev.Player.IsGodModeEnabled = ev.NewRole == RoleType.Tutorial;
+				ev.Player.IsGodModeEnabled = ev.NewRole == RoleTypeId.Tutorial;
 		}
 
 		public void OnWaitingForPlayers()

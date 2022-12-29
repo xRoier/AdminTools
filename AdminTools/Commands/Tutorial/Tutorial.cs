@@ -4,6 +4,7 @@ using Exiled.API.Features;
 using MEC;
 using System;
 using System.Collections.Generic;
+using PlayerRoles;
 using UnityEngine;
 using RemoteAdmin;
 
@@ -74,21 +75,21 @@ namespace AdminTools.Commands.Tutorial
         private IEnumerator<float> SetClassAsTutorial(Player ply) 
         {
             Vector3 oldPos = ply.Position;
-            ply.SetRole(RoleType.Tutorial);
+            ply.Role.Set(RoleTypeId.Tutorial);
             yield return Timing.WaitForSeconds(0.5f);
             ply.Position = oldPos;
         }
 
         private void DoTutorialFunction(Player ply, out string response)
         {
-            if (ply.Role != RoleType.Tutorial)
+            if (ply.Role.Type!= RoleTypeId.Tutorial)
             {
                 Timing.RunCoroutine(SetClassAsTutorial(ply));
                 response = $"Player {ply.Nickname} is now set to tutorial";
             }
             else
             {
-                ply.SetRole(RoleType.Spectator);
+                ply.Role.Set(RoleTypeId.Spectator);
                 response = $"Player {ply.Nickname} is now set to spectator";
             }
         }

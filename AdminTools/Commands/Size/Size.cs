@@ -2,6 +2,7 @@
 using Exiled.API.Features;
 using Exiled.Permissions.Extensions;
 using System;
+using PlayerRoles;
 
 namespace AdminTools.Commands.Size
 {
@@ -39,7 +40,7 @@ namespace AdminTools.Commands.Size
                 case "reset":
                     foreach (Player ply in Player.List)
                     {
-                        if (ply.Role == RoleType.Spectator || ply.Role == RoleType.None)
+                        if (ply.Role.Type is RoleTypeId.Spectator or RoleTypeId.None)
                             continue;
 
                         EventHandlers.SetPlayerScale(ply.GameObject, 1, 1, 1);
@@ -75,7 +76,7 @@ namespace AdminTools.Commands.Size
 
                     foreach (Player ply in Player.List)
                     {
-                        if (ply.Role == RoleType.Spectator || ply.Role == RoleType.None)
+                        if (ply.Role.Type== RoleTypeId.Spectator || ply.Role.Type== RoleTypeId.None)
                             continue;
 
                         EventHandlers.SetPlayerScale(ply.GameObject, xval, yval, zval);

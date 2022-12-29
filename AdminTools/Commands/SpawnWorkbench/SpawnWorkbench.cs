@@ -5,6 +5,7 @@ using RemoteAdmin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using PlayerRoles;
 using UnityEngine;
 
 namespace AdminTools.Commands.SpawnWorkbench
@@ -179,7 +180,7 @@ namespace AdminTools.Commands.SpawnWorkbench
                     int index = 0;
                     foreach (Player p in Player.List)
                     {
-                        if (p.Role == RoleType.Spectator || p.Role == RoleType.None)
+                        if (p.Role.Type== RoleTypeId.Spectator || p.Role.Type== RoleTypeId.None)
                             continue;
 
                         EventHandlers.SpawnWorkbench(player, p.Position + p.ReferenceHub.PlayerCameraReference.forward * 2, p.GameObject.transform.rotation.eulerAngles, new Vector3(xval, yval, zval), out int benchIndex);
@@ -201,7 +202,7 @@ namespace AdminTools.Commands.SpawnWorkbench
                         response = $"Player not found: {arguments.At(0)}";
                         return false;
                     }
-                    else if (pl.Role == RoleType.Spectator || pl.Role == RoleType.None)
+                    else if (pl.Role.Type== RoleTypeId.Spectator || pl.Role.Type== RoleTypeId.None)
                     {
                         response = $"This player is not a valid class to spawn a workbench on";
                         return false;

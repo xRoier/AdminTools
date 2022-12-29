@@ -2,6 +2,7 @@
 using Exiled.API.Features;
 using Exiled.Permissions.Extensions;
 using System;
+using PlayerRoles;
 
 namespace AdminTools.Commands.Explode
 {
@@ -47,7 +48,7 @@ namespace AdminTools.Commands.Explode
 
                     foreach (Player ply in Player.List)
                     {
-                        if (ply.Role == RoleType.Spectator || ply.Role == RoleType.None)
+                        if (ply.Role.Type== RoleTypeId.Spectator || ply.Role.Type== RoleTypeId.None)
                             continue;
 
                         ply.Kill("Exploded by admin.");
@@ -71,7 +72,7 @@ namespace AdminTools.Commands.Explode
                         return false;
                     }
 
-                    if (pl.Role == RoleType.Spectator || pl.Role == RoleType.None)
+                    if (pl.Role.Type== RoleTypeId.Spectator || pl.Role.Type== RoleTypeId.None)
                     {
                         response = $"Player \"{pl.Nickname}\" is not a valid class to explode";
                         return false;

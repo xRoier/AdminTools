@@ -1,8 +1,10 @@
-﻿using CommandSystem;
+﻿/*
+using CommandSystem;
 using Exiled.API.Features;
 using Exiled.Permissions.Extensions;
 using MEC;
 using System;
+using PlayerRoles;
 
 namespace AdminTools.Commands.SpawnRagdoll
 {
@@ -36,13 +38,13 @@ namespace AdminTools.Commands.SpawnRagdoll
 
             if (arguments.Count != 3)
             {
-                response = "Usage: spawnragdoll ((player id / name) or (all / *)) (RoleType) (amount)";
+                response = "Usage: spawnragdoll ((player id / name) or (all / *)) (RoleTypeId) (amount)";
                 return false;
             }
 
-            if (!Enum.TryParse(arguments.At(1), true, out RoleType type))
+            if (!Enum.TryParse(arguments.At(1), true, out RoleTypeId type))
             {
-                response = $"Invalid RoleType for ragdoll: {arguments.At(1)}";
+                response = $"Invalid RoleTypeId for ragdoll: {arguments.At(1)}";
                 return false;
             }
 
@@ -58,7 +60,7 @@ namespace AdminTools.Commands.SpawnRagdoll
                 case "all":
                     foreach (Player player in Player.List)
                     {
-                        if (player.Role != RoleType.Spectator) 
+                        if (player.Role.Type!= RoleTypeId.Spectator) 
                             Timing.RunCoroutine(SpawnDolls(player, type, amount));
                     }
 
@@ -80,7 +82,7 @@ namespace AdminTools.Commands.SpawnRagdoll
             return true;
         }
 
-        private IEnumerator<float> SpawnDolls(Player player, RoleType type, int amount)
+        private IEnumerator<float> SpawnDolls(Player player, RoleTypeId type, int amount)
         {
             for (int i = 0; i < amount; i++)
             {
@@ -90,3 +92,4 @@ namespace AdminTools.Commands.SpawnRagdoll
         }
     }
 }
+*/

@@ -3,6 +3,7 @@ using Exiled.API.Features;
 using Exiled.Permissions.Extensions;
 using MEC;
 using System;
+using PlayerRoles;
 
 namespace AdminTools.Commands.Rocket
 {
@@ -56,7 +57,8 @@ namespace AdminTools.Commands.Rocket
                         response = $"Player not found: {arguments.At(0)}";
                         return false;
                     }
-                    else if (pl.Role == RoleType.Spectator || pl.Role == RoleType.None)
+
+                    if (pl.Role.Type is RoleTypeId.Spectator or RoleTypeId.None)
                     {
                         response = $"Player {pl.Nickname} is not a valid class to rocket";
                         return false;

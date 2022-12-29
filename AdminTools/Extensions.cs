@@ -1,5 +1,7 @@
 using System;
 using System.Reflection;
+using Exiled.API.Features.Roles;
+using PlayerRoles;
 using UnityEngine;
 
 namespace AdminTools
@@ -14,7 +16,7 @@ namespace AdminTools
 			info?.Invoke(null, param);
 		}
 
-		public static void OldRefreshPlyModel(this CharacterClassManager ccm, GameObject player, RoleType classId = RoleType.None)
+		/*public static void OldRefreshPlyModel(this CharacterClassManager ccm, GameObject player, RoleTypeId classId = RoleTypeId.None)
 		{
 			ReferenceHub hub = ReferenceHub.GetHub(player);
 			hub.GetComponent<AnimationController>().OnChangeClass();
@@ -22,7 +24,7 @@ namespace AdminTools
 			{
 				UnityEngine.Object.Destroy(ccm.MyModel);
 			}
-			Role role = ccm.Classes.SafeGet((classId < RoleType.Scp173) ? ccm.CurClass : classId);
+			Role role = ccm.Classes.SafeGet((classId < RoleTypeId.Scp173) ? ccm.CurClass : classId);
 			if (role.team != Team.RIP)
 			{
 				GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(role.model_player, ccm.gameObject.transform, true);
@@ -67,6 +69,6 @@ namespace AdminTools
 				}
 			}
 			ccm.GetComponent<CapsuleCollider>().enabled = (role.team != Team.RIP);
-		}
+		}*/
 	}
 }

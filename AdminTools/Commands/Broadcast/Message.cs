@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using PlayerRoles;
 
 namespace AdminTools.Commands.Message
 {
@@ -38,8 +39,8 @@ namespace AdminTools.Commands.Message
                     "\nbroadcast users (player id / name group (i.e.: 1,2,3 or hello,there,hehe)) (time) (message)" +
                     "\nbroadcast group (group name) (time) (message)" +
                     "\nbroadcast groups (list of groups (i.e.: owner,admin,moderator)) (time) (message)" +
-                    "\nbroadcast role (RoleType) (time) (message)" +
-                    "\nbroadcast roles (RoleType group (i.e.: ClassD,Scientist,NtfCadet)) (time) (message)" +
+                    "\nbroadcast role (RoleTypeId) (time) (message)" +
+                    "\nbroadcast roles (RoleTypeId group (i.e.: ClassD,Scientist,NtfCadet)) (time) (message)" +
                     "\nbroadcast (random / someone) (time) (message)" +
                     "\nbroadcast (staff / admin) (time) (message)" +
                     "\nbroadcast clearall";
@@ -181,13 +182,13 @@ namespace AdminTools.Commands.Message
                 case "role":
                     if (arguments.Count < 4)
                     {
-                        response = "Usage: broadcast role (RoleType) (time) (message)";
+                        response = "Usage: broadcast role (RoleTypeId) (time) (message)";
                         return false;
                     }
 
-                    if (!Enum.TryParse(arguments.At(1), true, out RoleType role))
+                    if (!Enum.TryParse(arguments.At(1), true, out RoleTypeId role))
                     {
-                        response = $"Invalid value for RoleType: {arguments.At(1)}";
+                        response = $"Invalid value for RoleTypeId: {arguments.At(1)}";
                         return false;
                     }
 
@@ -199,7 +200,7 @@ namespace AdminTools.Commands.Message
 
                     foreach (Player player in Player.List)
                     {
-                        if (player.Role == role)
+                        if (player.Role.Type== role)
                             player.Broadcast(te, EventHandlers.FormatArguments(arguments, 3));
                     }
 
@@ -208,15 +209,15 @@ namespace AdminTools.Commands.Message
                 case "roles":
                     if (arguments.Count < 4)
                     {
-                        response = "Usage: broadcast roles (RoleType group (i.e.: ClassD, Scientist, NtfCadet)) (time) (message)";
+                        response = "Usage: broadcast roles (RoleTypeId group (i.e.: ClassD, Scientist, NtfCadet)) (time) (message)";
                         return false;
                     }
 
                     string[] roles = arguments.At(1).Split(',');
-                    List<RoleType> roleList = new();
+                    List<RoleTypeId> roleList = new();
                     foreach (string s in roles)
                     {
-                        if (Enum.TryParse(s, true, out RoleType r))
+                        if (Enum.TryParse(s, true, out RoleTypeId r))
                             roleList.Add(r);
                     }
 
@@ -231,7 +232,7 @@ namespace AdminTools.Commands.Message
                             p.Broadcast(ti, EventHandlers.FormatArguments(arguments, 3));
 
                     StringBuilder build = StringBuilderPool.Shared.Rent("Message sent to roles: ");
-                    foreach (RoleType ro in roleList)
+                    foreach (RoleTypeId ro in roleList)
                     {
                         build.Append("\"");
                         build.Append(ro.ToString());
@@ -290,7 +291,7 @@ namespace AdminTools.Commands.Message
                         return false;
                     }
 
-                    PlayerManager.localPlayer.GetComponent<Broadcast>().RpcClearElements();
+                    Map.ClearBroadcasts();
                     response = "All current broadcasts have been cleared";
                     return true;
                 default:

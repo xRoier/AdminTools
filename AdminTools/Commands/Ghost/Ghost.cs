@@ -2,6 +2,7 @@
 using Exiled.API.Features;
 using Exiled.Permissions.Extensions;
 using System;
+using Exiled.API.Features.Roles;
 
 namespace AdminTools.Commands.Ghost
 {
@@ -38,14 +39,14 @@ namespace AdminTools.Commands.Ghost
             {
                 case "clear":
                     foreach (Player pl in Player.List)
-                        pl.IsInvisible = false;
+                        pl.Role.As<FpcRole>().IsInvisible = false;
 
                     response = "Everyone is no longer invisible";
                     return true;
                 case "*":
                 case "all":
                     foreach (Player pl in Player.List)
-                        pl.IsInvisible = true;
+                        pl.Role.As<FpcRole>().IsInvisible = true;
 
                     response = "Everyone is now invisible";
                     return true;
@@ -57,14 +58,14 @@ namespace AdminTools.Commands.Ghost
                         return false;
                     }
 
-                    if (!ply.IsInvisible)
+                    if (!ply.Role.As<FpcRole>().IsInvisible)
                     {
-                        ply.IsInvisible = true;
+                        ply.Role.As<FpcRole>().IsInvisible = true;
                         response = $"Player {ply.Nickname} is now invisible";
                     }
                     else
                     {
-                        ply.IsInvisible = false;
+                        ply.Role.As<FpcRole>().IsInvisible = false;
                         response = $"Player {ply.Nickname} is no longer invisible";
                     }
                     return true;

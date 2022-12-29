@@ -1,10 +1,12 @@
-﻿using CommandSystem;
+﻿/*
+using CommandSystem;
 using Exiled.API.Features;
 using Exiled.Permissions.Extensions;
 using RemoteAdmin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using PlayerRoles;
 using UnityEngine;
 
 namespace AdminTools.Commands.Dummy
@@ -39,7 +41,7 @@ namespace AdminTools.Commands.Dummy
             Player player = Player.Get(plysend.ReferenceHub);
             if (arguments.Count < 1)
             {
-                response = "Usage:\ndummy ((player id / name) or (all / *)) (RoleType) (x value) (y value) (z value)" +
+                response = "Usage:\ndummy ((player id / name) or (all / *)) (RoleTypeId) (x value) (y value) (z value)" +
                     "\ndummy clear (player id / name) (minimum index) (maximum index)" +
                     "\ndummy clearall" +
                     "\ndummy count (player id / name) ";
@@ -153,11 +155,11 @@ namespace AdminTools.Commands.Dummy
                 case "all":
                     if (arguments.Count != 5)
                     {
-                        response = "Usage: dummy (all / *) (RoleType) (x value) (y value) (z value)";
+                        response = "Usage: dummy (all / *) (RoleTypeId) (x value) (y value) (z value)";
                         return false;
                     }
 
-                    if (!Enum.TryParse(arguments.At(1), true, out RoleType role))
+                    if (!Enum.TryParse(arguments.At(1), true, out RoleTypeId role))
                     {
                         response = $"Invalid value for role type: {arguments.At(1)}";
                         return false;
@@ -183,7 +185,7 @@ namespace AdminTools.Commands.Dummy
                     int index = 0;
                     foreach (Player p in Player.List)
                     {
-                        if (p.Role == RoleType.Spectator || p.Role == RoleType.None)
+                        if (p.Role.Type== RoleTypeId.Spectator || p.Role.Type== RoleTypeId.None)
                             continue;
 
                         EventHandlers.SpawnDummyModel(player, p.Position, p.GameObject.transform.localRotation, role, xval, yval, zval, out int dIndex);
@@ -195,7 +197,7 @@ namespace AdminTools.Commands.Dummy
                 default:
                     if (arguments.Count != 5)
                     {
-                        response = "Usage: dummy (player id / name) (RoleType) (x value) (y value) (z value)";
+                        response = "Usage: dummy (player id / name) (RoleTypeId) (x value) (y value) (z value)";
                         return false;
                     }
 
@@ -205,13 +207,13 @@ namespace AdminTools.Commands.Dummy
                         response = $"Player not found: {arguments.At(0)}";
                         return false;
                     }
-                    else if (pl.Role == RoleType.Spectator || pl.Role == RoleType.None)
+                    else if (pl.Role.Type== RoleTypeId.Spectator || pl.Role.Type== RoleTypeId.None)
                     {
                         response = $"This player is not a valid class to spawn a dummy on";
                         return false;
                     }
 
-                    if (!Enum.TryParse(arguments.At(1), true, out RoleType r2))
+                    if (!Enum.TryParse(arguments.At(1), true, out RoleTypeId r2))
                     {
                         response = $"Invalid value for role type: {arguments.At(1)}";
                         return false;
@@ -242,3 +244,4 @@ namespace AdminTools.Commands.Dummy
         }
     }
 }
+*/

@@ -2,6 +2,7 @@
 using Exiled.Permissions.Extensions;
 using Mirror;
 using System;
+using Exiled.API.Features;
 
 namespace AdminTools.Commands.Cleanup
 {
@@ -27,8 +28,9 @@ namespace AdminTools.Commands.Cleanup
                 return false;
             }
 
-            foreach (Ragdoll doll in UnityEngine.Object.FindObjectsOfType<Ragdoll>())
-                NetworkServer.Destroy(doll.gameObject);
+            
+            foreach (Ragdoll doll in Map.Ragdolls)
+                NetworkServer.Destroy(doll.GameObject);
 
             response = "Ragdolls have been cleaned up now";
             return true;

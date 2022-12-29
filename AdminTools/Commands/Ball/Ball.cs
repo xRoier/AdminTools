@@ -2,6 +2,7 @@
 using Exiled.API.Features;
 using Exiled.Permissions.Extensions;
 using System;
+using PlayerRoles;
 
 namespace AdminTools.Commands.Ball
 {
@@ -43,7 +44,7 @@ namespace AdminTools.Commands.Ball
                 case "all":
                     foreach (Player pl in Player.List)
                     {
-                        if (pl.Role == RoleType.Spectator || pl.Role == RoleType.None)
+                        if (pl.Role.Type== RoleTypeId.Spectator || pl.Role.Type== RoleTypeId.None)
                             continue;
 
                         players.Add(pl);
@@ -58,7 +59,7 @@ namespace AdminTools.Commands.Ball
                         return false;
                     }
 
-                    if (ply.Role == RoleType.Spectator || ply.Role == RoleType.None)
+                    if (ply.Role.Type== RoleTypeId.Spectator || ply.Role.Type== RoleTypeId.None)
                     {
                         response = $"You cannot spawn a ball on that player right now";
                         return false;

@@ -2,6 +2,7 @@
 using Exiled.API.Features;
 using Exiled.Permissions.Extensions;
 using System;
+using PlayerRoles;
 
 namespace AdminTools.Commands.TeleportX
 {
@@ -47,7 +48,7 @@ namespace AdminTools.Commands.TeleportX
 
                     foreach (Player plyr in Player.List)
                     {
-                        if (plyr.Role == RoleType.Spectator || ply.Role == RoleType.None)
+                        if (plyr.Role.Type== RoleTypeId.Spectator || ply.Role.Type== RoleTypeId.None)
                             continue;
 
                         plyr.Position = ply.Position;
